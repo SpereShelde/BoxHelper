@@ -1,3 +1,4 @@
+# BoxHelper
 ### 自动获取pt 站的Free种等。
 ### 目前仅做自用，仅支持M-Team
 
