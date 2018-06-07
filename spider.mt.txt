@@ -1,0 +1,33 @@
+#Your username of M-Team
+#你的M-Team用户名
+username <=> USERNAME
+
+#Your password of M-Team
+#你的M-Team密码
+password <=> PASSWORD
+
+#URLs of websites you want. Use ',' to seperate
+#你想要抓取Free种的页面
+#For example:
+urls <=> https://tp.m-team.cc/adult.php, https://tp.m-team.cc/movie.php
+
+#The wget command path
+#系统中wget命令的位置
+#You can use which wget to acquire
+#可以使用 ‘which wget’ 查询，结尾不带‘／’
+wgetPath <=> /usr/bin/wget
+
+#The watch directory path
+#你的监听目录路径
+#YOU MUST ADD '/' in the end of the path
+#结尾必须带‘／’
+downloadPath <=> /user/local/
+
+#The working cycle of spider in minutes
+#抓取周期
+#5 means 5 minutes
+#5意味着5分钟
+#Do not make it too short; 0.3 minutes may be the shortest
+#请不要设置得过短，0.3分钟差不多是极限
+cycle <=> 5
+
