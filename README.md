@@ -1,6 +1,14 @@
 # BoxHelper
-### 自动获取pt 站的Free种等。
-### 目前仅做自用，仅支持M-Team
+## 目标：
+
+自动监听并下载指定 PT 站内指定页面的指定类型的种子
+
+## 目前完成度：
+
+-仅支持M-Team馒头
+-仅支持Free种
+-可选择监听页面
+-可按大小筛选种子
 
 ## 环境要求：
 需要JDK 1.8及以上
@@ -12,10 +20,10 @@ BoxHelper 需要你提供账号和密码，但 BoxHelper 不会上传它们
 
 ## 使用方法：
 screen开启后台：
-screen -R mt
+`screen -R mt`
 
 编辑配置：
-vi spider.mt.txt
+`vi spider.mt.txt`
 
 运行BoxHelper：
-java -jar mt.jar
+`java -jar mt.jar`
