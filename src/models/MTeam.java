@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 
 /**
- * Created by wzf on 2018/5/31.
+ * Created by SpereShelde on 2018/5/31.
  */
 public class MTeam implements Runnable {
 
@@ -103,22 +103,36 @@ public class MTeam implements Runnable {
         WebDriverWait webDriverWait = new WebDriverWait(driver, 5);
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#form_torrent > table")));
         String originalString = driver.findElementByCssSelector("#form_torrent > table").getAttribute("outerHTML");
-
         String searchString = originalString;
-        String regexString = "id=[0-9]*.*Free.*</td>";
+        String regexString = "id=[0-9]*.*Free.*</a></td>";
         Pattern datePattern = Pattern.compile(regexString);
         Matcher dateMatcher = datePattern.matcher(searchString);
         int beEndIndex = 0;
         freeIDs = new ArrayList<String>();
+        double size = 0;
+        double max = Double.valueOf(configures.get("max").toString());
+        if (max == -1) max = 65535;
         while(dateMatcher.find()) {
             String subString = dateMatcher.group();
             String id = subString.substring(3, subString.indexOf("&"));
+
+            int indexOfSize = searchString.indexOf("</span></td><td class=\"rowfollow\">");
+            int indexOfUnit = searchString.indexOf("B</td><td");
+            String sizeAndUnitString = searchString.substring(indexOfSize, indexOfUnit);
+
+            if ("M".equals(sizeAndUnitString.substring(sizeAndUnitString.length() - 1))){
+                size = Double.valueOf(sizeAndUnitString.substring(34, sizeAndUnitString.lastIndexOf("<"))) / 1024;
+            } else {
+                size = Double.valueOf(sizeAndUnitString.substring(34, sizeAndUnitString.lastIndexOf("<")));
+            }
             if (!freeIDs.contains(id)) {
-                String[] temp = {this.configures.get("wgetPath").toString(), "https://tp.m-team.cc/download.php?id=" + id + "&passkey=" + this.configures.get("passkey").toString(), "-O", this.configures.get("downloadPath") + id + ".torrent"};
-                System.out.println("Downloading " + id + "...");
-                ExecuteShell executeShell = new ExecuteShell(temp);
-                executeShell.run();
-                freeIDs.add(id);
+                if (size >= Double.valueOf(configures.get("min").toString()) && size <= max) {
+                    String[] temp = {this.configures.get("wgetPath").toString(), "https://tp.m-team.cc/download.php?id=" + id + "&passkey=" + this.configures.get("passkey").toString(), "-O", this.configures.get("downloadPath") + id + ".torrent"};
+                    System.out.println("Downloading " + id + "..." + " size: " + size + " GB");
+                    ExecuteShell executeShell = new ExecuteShell(temp);
+                    executeShell.run();
+                    freeIDs.add(id);
+                }
             }
             int subIndex = searchString.indexOf(subString);
             int subLength = subString.length();
@@ -126,7 +140,6 @@ public class MTeam implements Runnable {
             searchString = originalString.substring(beEndIndex);
             dateMatcher = datePattern.matcher(searchString);
         }
-//        System.out.println(this.links.toString());
         System.out.println("Spider of " + url + " done");
         return true;
     }

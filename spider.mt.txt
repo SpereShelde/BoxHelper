@@ -11,6 +11,15 @@ password <=> PASSWORD
 #For example:
 urls <=> https://tp.m-team.cc/adult.php, https://tp.m-team.cc/movie.php
 
+#The size range,
+#种子大小筛选范围，单位是GB
+#-1 means no limits
+#-1 为不限制
+#最小值
+min <=> -1
+#最大值
+max <=> -1
+
 #The wget command path
 #系统中wget命令的位置
 #You can use which wget to acquire
@@ -23,11 +32,9 @@ wgetPath <=> /usr/bin/wget
 #结尾必须带‘／’
 downloadPath <=> /user/local/
 
-#The working cycle of spider in minutes
-#抓取周期
-#5 means 5 minutes
-#5意味着5分钟
+#The working cycle of spider in minutes, in minutes
+#抓取周期，单位是分钟
 #Do not make it too short; 0.3 minutes may be the shortest
 #请不要设置得过短，0.3分钟差不多是极限
-cycle <=> 5
+cycle <=> 1
 
