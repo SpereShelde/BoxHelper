@@ -1,11 +1,10 @@
 package models;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import tools.ExecuteShell;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ public class Spider implements Runnable {
     private String site, passkey, url, path;
     private ArrayList<String> freeIDs;
     private double min,max;
-//    private ArrayList<Cookie> cookies;
     private HtmlUnitDriver driver;
 
     public Spider(String site, String passkey, String path, double min, double max, HtmlUnitDriver driver) {
@@ -71,10 +69,10 @@ public class Spider implements Runnable {
             }
             if (!this.freeIDs.contains(id)) {
                 if (size >= this.min && size <= this.max) {
-//                    String[] temp = {"wget", "https://" + site + "/download.php?id=" + id + "&passkey=" + this.passkey, "-O", this.path + this.url.substring(8, 16) + "." + id + ".torrent"};
+                    String[] temp = {"wget", "https://" + site + "/download.php?id=" + id + "&passkey=" + this.passkey, "-O", this.path + this.url.substring(8, 16) + "." + id + ".torrent"};
                     System.out.println("Downloading " + id + "..." + " size: " + new DecimalFormat("#.00").format(size)  + " GB");
-//                    ExecuteShell executeShell = new ExecuteShell(temp);
-//                    executeShell.run();
+                    ExecuteShell executeShell = new ExecuteShell(temp);
+                    executeShell.run();
                     this.freeIDs.add(this.url.substring(8, 16) + "." + id);
                 }
             }
