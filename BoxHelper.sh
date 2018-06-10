@@ -53,8 +53,8 @@ echo "JDK install success!"
 
 download_release(){
 echo "Downloading BoxHelper..."
-wget --no-check-certificate 'https://github.com/SpereShelde/BoxHelper/releases/download/v0.3/BoxHelper.zip'
-unzip BoxHelper.zip
+wget --no-check-certificate 'https://github.com/SpereShelde/BoxHelper/releases/download/v1.0/BoxHelper.jar'
+wget --no-check-certificate 'https://raw.githubusercontent.com/SpereShelde/BoxHelper/master/BoxHelper.conf'
 }
 
 copy_wget(){
