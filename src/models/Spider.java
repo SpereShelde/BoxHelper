@@ -91,6 +91,9 @@ public class Spider implements Runnable {
 
     @Override
     public void run() {
+        if (!"/".equals(this.path.substring(this.path.length() - 1))){
+            this.path = this.path + "/";
+        }
         getFreeIDs();
 
     }
