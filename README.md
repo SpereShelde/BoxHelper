@@ -8,9 +8,9 @@
 
 下载脚本：
 
-`wget --no-check-certificate 'https://github.com/SpereShelde/BoxHelper/releases/download/v1.1/BoxHelper.zip'`
+`wget --no-check-certificate 'https://github.com/SpereShelde/BoxHelper/releases/download/v1.1/BoxHelper.tar'`
 
-解压脚本：`unzip BoxHelper.zip && cd BoxHelper`
+解压脚本：`tar -zxf BoxHelper.tar && cd BoxHelper`
 
 编辑配置：`vi config.json`
 
