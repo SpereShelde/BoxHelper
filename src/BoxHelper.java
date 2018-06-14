@@ -1,18 +1,20 @@
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import models.Spider;
 import models.Type1;
-import models.MTeam;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import tools.ConvertJson;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
 import static java.lang.Thread.sleep;
@@ -22,76 +24,85 @@ import static java.lang.Thread.sleep;
  */
 public class BoxHelper {
 
-    private static Map configures = new HashMap();
+    private Map configures = new HashMap();
+    private Map passkeys = new HashMap();
+    private HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.CHROME);
 
-    private static void getConfigures() {// Get configures from file.
+    private void getConfigures() {// Get configures from file.
 
-        if (new File("boxHelper.conf").exists()){
+        driver.setJavascriptEnabled(false);
+        Logger logger = Logger.getLogger("");
+        logger.setLevel(Level.OFF);
+        try {
+            configures = ConvertJson.convertConfigure("config.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<Path> jsonFiles = new ArrayList<>();
+
+        try {
+            DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("cookies"));
+            for(Path path : stream){
+                if (path.getFileName().toString().endsWith(".json")) {
+                    jsonFiles.add(path);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (Path path: jsonFiles) {
+            System.out.println("Loading " +  path.getFileName().toString() + "...");
             try {
-                Object[] config = Files.readAllLines(Paths.get("boxHelper.conf")).toArray();//Read file by lines.
-                for (Object o: config) {
-                    String s = o.toString().trim();
-                    if (!("".equals(s) || s.charAt(0)=='#' || !s.contains("<=>") || s.trim().lastIndexOf("<=>") == s.length() - 3)){
-                        String[] line = s.split("<=>");
-                        if ("".equals(line[1])) {
-                            configures.put(line[0].trim(), " ");//Add configures to Map.
-                        } else {
-                            configures.put(line[0].trim(), line[1].trim());//Add configures to Map.
-                        }
-                    }
+                driver.get("http://" + path.getFileName().toString().substring(0, path.getFileName().toString().length() - 5));
+                for (Cookie cookie :ConvertJson.convertCookie(path.toString())) {
+                    driver.manage().addCookie(cookie);
                 }
             } catch (IOException e) {
-                System.out.println("Unable to read file boxHelper.conf");
+                e.printStackTrace();
+            }
+            String website = path.getFileName().toString().substring(0, path.getFileName().toString().length() - 5);
+            switch (website){
+                case "pt.btschool.net":
+                case "tp.m-team.cc":
+                case "chdbits.co":
+                default:
+                    Type1 ptObject = new Type1(website, driver);
+                    for (String url: (ArrayList<String>) configures.get("urls")) {
+                        if (url.contains(website)) passkeys.put(url, ptObject.getPasskey());
+                    }
+                    break;
+                case "totheglory.im":
             }
         }
+        System.out.println("Done");
     }
 
     public static void main(String[] args) {
 
-        getConfigures();
+
+        BoxHelper boxHelper = new BoxHelper();
+        boxHelper.getConfigures();
         int cpuThreads = Runtime.getRuntime().availableProcessors();
-        HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.CHROME);
-        driver.manage().deleteAllCookies();
-        MTeam mTeam = new MTeam();
-        Type1 chdbits = new Type1();
-        if (!(configures.get("m-team_id") == null || configures.get("m-team_key") == null || "".equals(configures.get("m-team_id").toString()) || "".equals(configures.get("m-team_key").toString()))) {
-            mTeam = new MTeam(configures.get("m-team_id").toString(), configures.get("m-team_key").toString());
-        }
-        if (!(configures.get("chdbits_id") == null || configures.get("chdbits_key") == null || "".equals(configures.get("chdbits_id").toString()) || "".equals(configures.get("chdbits_key").toString()))) {
-            chdbits = new Type1("chdbits.co", configures.get("chdbits_id").toString(), configures.get("chdbits_key").toString());
-        }
         int count  = 1;
-        String[] Pages = configures.get("urls").toString().split(",");
-        Spider spider1 = new Spider("tp.m-team.cc", mTeam.getPasskey(), configures.get("downloadPath").toString(), Double.parseDouble(configures.get("min").toString()), Double.parseDouble(configures.get("max").toString()), driver);
-        Spider spider2 = new Spider("chdbits.co", chdbits.getPasskey(), configures.get("downloadPath").toString(), Double.parseDouble(configures.get("min").toString()), Double.parseDouble(configures.get("max").toString()), driver);
-        driver.get("https://tp.m-team.cc/login.php");
-        for (Cookie cookie : mTeam.getCookies()) {
-            driver.manage().addCookie(cookie);
+        ArrayList<Spider> spiders = new ArrayList<>();
+        ArrayList<String> urls = (ArrayList<String>) boxHelper.configures.get("urls");
+        for (String url: urls){
+            spiders.add(new Spider(url.substring(url.indexOf("//") + 2, url.indexOf("/", 8)), boxHelper.passkeys.get(url).toString(), url, boxHelper.configures.get("path").toString(), Double.parseDouble(boxHelper.configures.get("min").toString()), Double.parseDouble(boxHelper.configures.get("max").toString()), boxHelper.driver));
         }
-        driver.get("https://chdbits.co/login.php");
-        for (Cookie cookie : chdbits.getCookies()) {
-            driver.manage().addCookie(cookie);
-        }
+        AtomicInteger atomicInt = new AtomicInteger(0);
         while (true){
             ExecutorService executorService = Executors.newFixedThreadPool(cpuThreads);
-            System.out.println("\nBoxHelper " + count + " begin at " + time());
-            for (String page: Pages) {
-                if (page.contains("tp.m-team.cc")){
-                    spider1.setUrl(page);
-                    executorService.execute(spider1);
-                }else if (page.contains("chdbits.co")){
-                    spider2.setUrl(page);
-                    executorService.execute(spider2);
-                }
-                try {
-                    sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            executorService.submit(atomicInt::incrementAndGet);
+            System.out.println("\nBoxHelper " + count + " begins at " + time());
+
+            for (Spider spider: spiders) {
+                executorService.execute(spider);
             }
             executorService.shutdown();
             try {
-                sleep((long) (1000*60*Double.valueOf(configures.get("cycle").toString())));
+                sleep((long) (1000*60*Double.valueOf(boxHelper.configures.get("cycle").toString())));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
