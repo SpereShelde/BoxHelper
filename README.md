@@ -12,7 +12,7 @@
 
 解压脚本：`tar -zxf BoxHelper.tar && cd BoxHelper`
 
-编辑配置：`vi config.json`
+编辑配置：`vi config.json` [查看参数说明](https://github.com/SpereShelde/BoxHelper/wiki/%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E)
 
 保存Cookie：在 cookies 目录下，使用json格式保存您的站点cookie，命名为`站点域名`.json，[查看 Wiki 详解](https://github.com/SpereShelde/BoxHelper/wiki/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98Cookie)
 
