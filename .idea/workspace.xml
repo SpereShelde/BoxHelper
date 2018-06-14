@@ -7,17 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="125ace7c-ae70-4656-8ce2-f4caafb2a5a3" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/tools/ConvertJson.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/BoxHelper.conf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/boxHelper/models/MTeam.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/models/MTeam.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/boxHelper/BoxHelper.class" afterPath="$PROJECT_DIR$/out/production/boxHelper/BoxHelper.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/boxHelper/models/Spider.class" afterPath="$PROJECT_DIR$/out/production/boxHelper/models/Spider.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/boxHelper/models/Type1.class" afterPath="$PROJECT_DIR$/out/production/boxHelper/models/Type1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BoxHelper.java" afterPath="$PROJECT_DIR$/src/BoxHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/models/Spider.java" afterPath="$PROJECT_DIR$/src/models/Spider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/models/Type1.java" afterPath="$PROJECT_DIR$/src/models/Type1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BoxHelper.sh" afterPath="$PROJECT_DIR$/BoxHelper.sh" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -72,8 +62,8 @@
       <file leaf-file-name="Type1.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/models/Type1.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-93">
-              <caret line="9" column="24" lean-forward="true" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+            <state relative-caret-position="468">
+              <caret line="44" column="57" lean-forward="true" selection-start-line="44" selection-start-column="57" selection-end-line="44" selection-end-column="57" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -258,7 +248,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.18355185" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -711,12 +701,12 @@
       <workItem from="1528604768332" duration="154000" />
       <workItem from="1528604964865" duration="6117000" />
       <workItem from="1528614691769" duration="1162000" />
-      <workItem from="1528713736645" duration="56277000" />
+      <workItem from="1528713736645" duration="56742000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="163766000" />
+    <option name="totallyTimeSpent" value="164231000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="873" extended-state="6" />
@@ -1079,8 +1069,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/models/Type1.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-93">
-          <caret line="9" column="24" lean-forward="true" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+        <state relative-caret-position="468">
+          <caret line="44" column="57" lean-forward="true" selection-start-line="44" selection-start-column="57" selection-end-line="44" selection-end-column="57" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
