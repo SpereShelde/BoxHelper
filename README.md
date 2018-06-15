@@ -1,56 +1,54 @@
 # BoxHelper
 
-## 使用
+## 使用; How to use
 
-安装JDK1.8：
+克隆仓库; Clone this repository:
 
-`wget -qO- https://raw.githubusercontent.com/SpereShelde/BoxHelper/master/java.sh | bash`
+`git clone https://github.com/SpereShelde/BoxHelper.git && cd BoxHelper`
 
-下载脚本：
+安装环境，仅使用一次; Build environment for the first time: `bash java.sh`
 
-`wget --no-check-certificate 'https://github.com/SpereShelde/BoxHelper/releases/download/v1.1/BoxHelper.tar'`
+编辑配置; Edit confiure file：`vi config.json` [帮助Help](https://github.com/SpereShelde/BoxHelper/wiki/%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E;-What-is-configures)
 
-解压脚本：`tar -zxf BoxHelper.tar && cd BoxHelper`
+添加Cookie文件; Import cookie file：
 
-编辑配置：`vi config.json` [查看参数说明](https://github.com/SpereShelde/BoxHelper/wiki/%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E)
+在cookies目录下，使用json格式保存您的站点cookie，命名为`站点域名`.json
 
-保存Cookie：在 cookies 目录下，使用json格式保存您的站点cookie，命名为`站点域名`.json，[查看 Wiki 详解](https://github.com/SpereShelde/BoxHelper/wiki/%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98Cookie)
+Create a file under 'cookies', names 'WEBSITE-DOMAIN'.json, to save cookie.
 
-screen开启后台：`screen -R BoxHelper`
+可以添加多个Cookie文件, You can add several cookie files. [帮助Help](https://github.com/SpereShelde/BoxHelper/wiki/%E4%BF%9D%E5%AD%98Cookie;-How-to-save-cookies)
 
-运行BoxHelper：`java -jar BoxHelper.jar`
+开启后台；Create a background bash：`screen -R BoxHelper`
 
-Ctrl + a + d 退出screen后台
+运行BoxHelper; Run BoxHelper：`java -jar BoxHelper.jar`
 
-## 目标
+Ctrl + a + d 退出screen后台; Type Ctrl + a + d to exit;
 
-自动监听并下载指定 PT 站内指定页面的指定类型的种子
+## 目前完成度; Status
 
-## 目前完成度
+- Support M-Team, hdcmct.org, chdbits.co, hdchina.org, pt.btschool.net, open.cd and more unknown sites.
 
-- 支持 M-Team, hdcmct.org, chdbits.co, hdchina.org, pt.btschool.net 等
+- NOT support totheglory.im
 
-- 支持 Free、 2xFree 种
+- Support Free, 2xFree
 
-- 可选择监听页面
+- Support Deluge, rTorrent, qBittorrent, Transmission
 
-- 可按大小筛选种子
+- 可选择监听页面; You can choose pages to listen
 
-## To Do List
+- 可按大小筛选种子; You can shift torrents by size
 
-- 更高效获取 Passkey
-
-- 适配更多站点
-
-- 磁盘空间预警提醒
-
-## 说明
-
-- BoxHelper 需要配合 Deluge、 rTorrent 等软件的 watch directory
+## 注意事项; Watch this！ 
 
 - BoxHelper 需要你提供Cookie，并会获取你的passkey，但是 BoxHelper 不会上传他们
 
+- BoxHelper nees your cookie and will acquire your passkey, but BoxHelper will not upload them.
+
 - 账号有限，无法测试更多站点。如果确定 BoxHelper 支持 或 不支持 你所使用的站点，请告诉我，谢谢
 
-- 希望适配其他站点，请将站点Cookie发送到我的邮箱 `spereshelde#gmail.com`
+- We cannot test all sites. Please help us to test and tell me the result, thank you!
+
+- 反馈问题或希望适配其他站点，请发Issue或联系我: `spereshelde#gmail.com`
+
+- To feedback bugs or want us to test more sites, just open an issue or mail me at `spereshelde#gmail.com`
 
