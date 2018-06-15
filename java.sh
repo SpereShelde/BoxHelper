@@ -51,11 +51,6 @@ source ~/.bashrc
 echo "JDK install success!"
 }
 
-copy_wget(){
-echo "Copy wget to /bin ..."
-cp /usr/bin/wget /bin/wget
-}
-
 main(){
 download
 if [ $? != 0 ]; then
@@ -65,11 +60,6 @@ fi
 install_jdk
 if [ $? != 0 ]; then
 echo "JDK install failed"
-exit 1
-fi
-copy_wget
-if [ $? != 0 ]; then
-echo "Copy wget failed"
 exit 1
 fi
 }

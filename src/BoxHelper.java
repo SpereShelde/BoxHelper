@@ -1,6 +1,5 @@
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import models.Spider;
-import models.Type1;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import tools.ConvertJson;
@@ -12,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,21 +60,8 @@ public class BoxHelper {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            String website = path.getFileName().toString().substring(0, path.getFileName().toString().length() - 5);
-            switch (website){
-                case "pt.btschool.net":
-                case "tp.m-team.cc":
-                case "chdbits.co":
-                default:
-                    Type1 ptObject = new Type1(website, driver);
-                    for (String url: (ArrayList<String>) configures.get("urls")) {
-                        if (url.contains(website)) passkeys.put(url, ptObject.getPasskey());
-                    }
-                    break;
-                case "totheglory.im":
-            }
         }
-        System.out.println("Done");
+        System.out.println("Initialization done.\n");
     }
 
     public static void main(String[] args) {
@@ -89,12 +74,10 @@ public class BoxHelper {
         ArrayList<Spider> spiders = new ArrayList<>();
         ArrayList<String> urls = (ArrayList<String>) boxHelper.configures.get("urls");
         for (String url: urls){
-            spiders.add(new Spider(url.substring(url.indexOf("//") + 2, url.indexOf("/", 8)), boxHelper.passkeys.get(url).toString(), url, boxHelper.configures.get("path").toString(), Double.parseDouble(boxHelper.configures.get("min").toString()), Double.parseDouble(boxHelper.configures.get("max").toString()), boxHelper.driver));
+            spiders.add(new Spider(url.substring(url.indexOf("//") + 2, url.indexOf("/", 8)), url, boxHelper.configures.get("path").toString(), Double.parseDouble(boxHelper.configures.get("min").toString()), Double.parseDouble(boxHelper.configures.get("max").toString()), boxHelper.driver));
         }
-        AtomicInteger atomicInt = new AtomicInteger(0);
         while (true){
             ExecutorService executorService = Executors.newFixedThreadPool(cpuThreads);
-            executorService.submit(atomicInt::incrementAndGet);
             System.out.println("\nBoxHelper " + count + " begins at " + time());
 
             for (Spider spider: spiders) {

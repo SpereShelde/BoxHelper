@@ -21,17 +21,36 @@ public class Spider implements Runnable {
     private double min,max;
     private HtmlUnitDriver driver;
 
-    public Spider(String site, String passkey, String url, String path, double min, double max, HtmlUnitDriver driver) {
+    public Spider(String site, String url, String path, double min, double max, HtmlUnitDriver driver) {
         this.site = site;
-        this.passkey = passkey;
         this.url = url;
         this.path = path;
         this.min = min;
         this.max = max;
         this.driver = driver;
+        getPasskey();
     }
 
-    private boolean getFreeIDs() {
+    private void getPasskey() {
+        String source;
+        synchronized (driver){
+            driver.get(url);
+            source = driver.getPageSource();
+            Pattern passkeylink = Pattern.compile("href=.*details.php\\?id=[0-9]*.*hit=1");
+            Matcher sizeMatcher = passkeylink.matcher(source);
+            if  (sizeMatcher.find()){
+                driver.get("https://" + this.site + "/" + sizeMatcher.group().substring(6));
+            }
+            if (driver.getPageSource().contains("passkey=")){
+                source = driver.getPageSource();
+                passkey = source.substring(source.indexOf("passkey=") + 8, source.indexOf("passkey=") + 40);
+            } else {
+                System.out.println("Cannot acquire passkey");
+            }
+        }
+    }
+
+    private void getFreeIDs() {
         String originalString = null;
         WebDriverWait webDriverWait = new WebDriverWait(driver, 5);
         synchronized (driver){
@@ -70,8 +89,8 @@ public class Spider implements Runnable {
             }
             if (!this.freeIDs.contains(id)) {
                 if (size >= this.min && size <= this.max) {
-                    String[] temp = {"wget", "https://" + site + "/download.php?id=" + id + "&passkey=" + this.passkey, "-O", this.path + this.url.substring(8, 16) + "." + id + ".torrent"};
-                    System.out.println("Downloading " + id + "..." + " size: " + new DecimalFormat("#.00").format(size)  + " GB");
+                    String[] temp = {"/usr/bin/wget", "https://" + site + "/download.php?id=" + id + "&passkey=" + this.passkey, "-O", this.path + site + "." + id + ".torrent"};
+                    System.out.println("Downloading to " + this.path + site + "." + id + ".torrent, size: " + new DecimalFormat("#.00").format(size)  + " GB");
                     ExecuteShell executeShell = new ExecuteShell(temp);
                     executeShell.run();
                     this.freeIDs.add(id);
@@ -86,7 +105,6 @@ public class Spider implements Runnable {
             dateMatcher = datePattern.matcher(searchString);
         }
         System.out.println(url + " done");
-        return true;
     }
 
     @Override
