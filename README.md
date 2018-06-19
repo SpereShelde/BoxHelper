@@ -42,7 +42,7 @@ Ctrl + a + d 退出screen后台; Type Ctrl + a + d to exit;
 
 - BoxHelper 需要你提供Cookie，并会获取你的passkey，但是 BoxHelper 不会上传他们
 
-- BoxHelper nees your cookie and will acquire your passkey, but BoxHelper will not upload them.
+- BoxHelper needs your cookie and will acquire your passkey, but BoxHelper will not upload them.
 
 - 账号有限，无法测试更多站点。如果确定 BoxHelper 支持 或 不支持 你所使用的站点，请告诉我，谢谢
 
