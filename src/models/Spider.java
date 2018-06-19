@@ -86,7 +86,6 @@ public class Spider implements Runnable {
                 Pattern sizePattern = Pattern.compile("[1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|[1-9]\\d*");
                 Matcher sizeMatcher = sizePattern.matcher(sizeAndUnitString.substring(sizeAndUnitString.lastIndexOf("class")));
                 if  (sizeMatcher.find()) {
-                    System.out.println(sizeMatcher.group());
                     size = Double.valueOf(sizeMatcher.group());
                 }
                 if ("M".equals(sizeAndUnitString.substring(sizeAndUnitString.length() - 2))){
