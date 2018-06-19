@@ -73,26 +73,32 @@ public class Spider implements Runnable {
 
         double size = 0;
         if (this.max == -1) this.max = 65535;
+        String id = "";
+        String subString = "";
         while(dateMatcher.find()) {
-            String subString = dateMatcher.group();
-            String id = subString.substring(3, subString.indexOf("&"));
-            int indexOfSize = searchString.indexOf("</span></td><td class=");
-            int indexOfUnit = searchString.indexOf("B</td><td");
-            String sizeAndUnitString = searchString.substring(indexOfSize, indexOfUnit);
-            Pattern sizePattern = Pattern.compile("[1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|[1-9]\\d*");
-            Matcher sizeMatcher = sizePattern.matcher(sizeAndUnitString);
-            if  (sizeMatcher.find()){
-                size = Double.valueOf(sizeMatcher.group());
-            }
-            if ("M".equals(sizeAndUnitString.substring(sizeAndUnitString.length() - 1))){
-                size /= 1024;
+
+            subString = dateMatcher.group();
+            id = subString.substring(3, subString.indexOf("&"));
+            Pattern sizeAndUnitPattern = Pattern.compile("id=" + id + ".*[1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|[1-9]\\d*.*[GM][B]");
+            Matcher sizeAndUnitMatcher = sizeAndUnitPattern.matcher(searchString.substring(searchString.indexOf(id)));
+            if  (sizeAndUnitMatcher.find()){
+                String sizeAndUnitString = sizeAndUnitMatcher.group();
+                Pattern sizePattern = Pattern.compile("[1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|[1-9]\\d*");
+                Matcher sizeMatcher = sizePattern.matcher(sizeAndUnitString.substring(sizeAndUnitString.lastIndexOf("class")));
+                if  (sizeMatcher.find()) {
+                    System.out.println(sizeMatcher.group());
+                    size = Double.valueOf(sizeMatcher.group());
+                }
+                if ("M".equals(sizeAndUnitString.substring(sizeAndUnitString.length() - 2))){
+                    size /= 1024;
+                }
             }
             if (!this.freeIDs.contains(id)) {
                 if (size >= this.min && size <= this.max) {
-                    String[] temp = {"/usr/bin/wget", "https://" + site + "/download.php?id=" + id + "&passkey=" + this.passkey, "-O", this.path + site + "." + id + ".torrent"};
+//                    String[] temp = {"/usr/bin/wget", "https://" + site + "/download.php?id=" + id + "&passkey=" + this.passkey, "-O", this.path + site + "." + id + ".torrent"};
                     System.out.println("Downloading to " + this.path + site + "." + id + ".torrent, size: " + new DecimalFormat("#.00").format(size)  + " GB");
-                    ExecuteShell executeShell = new ExecuteShell(temp);
-                    executeShell.run();
+//                    ExecuteShell executeShell = new ExecuteShell(temp);
+//                    executeShell.run();
                     this.freeIDs.add(id);
                 }
             } else {
