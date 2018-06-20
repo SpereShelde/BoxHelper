@@ -94,10 +94,10 @@ public class Spider implements Runnable {
             }
             if (!this.freeIDs.contains(id)) {
                 if (size >= this.min && size <= this.max) {
-//                    String[] temp = {"/usr/bin/wget", "https://" + site + "/download.php?id=" + id + "&passkey=" + this.passkey, "-O", this.path + site + "." + id + ".torrent"};
+                    String[] temp = {"/usr/bin/wget", "https://" + site + "/download.php?id=" + id + "&passkey=" + this.passkey, "-O", this.path + site + "." + id + ".torrent"};
                     System.out.println("Downloading to " + this.path + site + "." + id + ".torrent, size: " + new DecimalFormat("#.00").format(size)  + " GB");
-//                    ExecuteShell executeShell = new ExecuteShell(temp);
-//                    executeShell.run();
+                    ExecuteShell executeShell = new ExecuteShell(temp);
+                    executeShell.run();
                     this.freeIDs.add(id);
                 }
             } else {
