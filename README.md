@@ -18,11 +18,17 @@ Create a file under 'cookies', names 'WEBSITE-DOMAIN'.json, to save cookie.
 
 可以添加多个Cookie文件, You can add several cookie files. [帮助Help](https://github.com/SpereShelde/BoxHelper/wiki/%E4%BF%9D%E5%AD%98Cookie;-How-to-save-cookies)
 
-开启后台；Create a background bash：`screen -R BoxHelper`
+开启后台; Create a background bash：`screen -R BoxHelper`
 
 运行BoxHelper; Run BoxHelper：`java -jar BoxHelper.jar`
 
 Ctrl + a + d 退出screen后台; Type Ctrl + a + d to exit;
+
+---
+
+升级(替换BoxHelper.jar); Upgrade(Download new BoxHelper.jar)：
+
+`wget 'https://github.com/SpereShelde/BoxHelper/blob/master/BoxHelper.jar?raw=true' -O BoxHelper.jar`
 
 ## 目前完成度; Status
 

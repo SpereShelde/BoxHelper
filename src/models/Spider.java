@@ -79,23 +79,23 @@ public class Spider implements Runnable {
 
             subString = dateMatcher.group();
             id = subString.substring(3, subString.indexOf("&"));
-            Pattern sizeAndUnitPattern = Pattern.compile("id=" + id + ".*[1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|[1-9]\\d*.*[GM][B]");
+            Pattern sizeAndUnitPattern = Pattern.compile("id=" + id + ".*[GM][B]");
             Matcher sizeAndUnitMatcher = sizeAndUnitPattern.matcher(searchString.substring(searchString.indexOf(id)));
             if  (sizeAndUnitMatcher.find()){
-                String sizeAndUnitString = sizeAndUnitMatcher.group();
+                String sizeAndUnitString = sizeAndUnitMatcher.group().substring(sizeAndUnitMatcher.group().lastIndexOf("class"));
                 Pattern sizePattern = Pattern.compile("[1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|[1-9]\\d*");
-                Matcher sizeMatcher = sizePattern.matcher(sizeAndUnitString.substring(sizeAndUnitString.lastIndexOf("class")));
+                Matcher sizeMatcher = sizePattern.matcher(sizeAndUnitString);
                 if  (sizeMatcher.find()) {
                     size = Double.valueOf(sizeMatcher.group());
                 }
-                if ("M".equals(sizeAndUnitString.substring(sizeAndUnitString.length() - 2))){
+                if ("MB".equals(sizeAndUnitString.substring(sizeAndUnitString.length() - 2))){
                     size /= 1024;
                 }
             }
             if (!this.freeIDs.contains(id)) {
                 if (size >= this.min && size <= this.max) {
                     String[] temp = {"/usr/bin/wget", "https://" + site + "/download.php?id=" + id + "&passkey=" + this.passkey, "-O", this.path + site + "." + id + ".torrent"};
-                    System.out.println("Downloading to " + this.path + site + "." + id + ".torrent, size: " + new DecimalFormat("#.00").format(size)  + " GB");
+                    System.out.println("Downloading to " + this.path + site + "." + id + ".torrent, size: " + new DecimalFormat("#0.00").format(size)  + " GB");
                     ExecuteShell executeShell = new ExecuteShell(temp);
                     executeShell.run();
                     this.freeIDs.add(id);
