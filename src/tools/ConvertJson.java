@@ -38,6 +38,12 @@ public class ConvertJson {
             }
             configures.put("urls", urls);
         }
+        if (object.has("isFree")) {
+            configures.put("isFree", object.get("isFree").getAsBoolean());
+        }
+        if (object.has("isSticky")) {
+            configures.put("isSticky", object.get("isSticky").getAsBoolean());
+        }
         if (object.has("min")) {
             configures.put("min", object.get("min").getAsDouble());
         }

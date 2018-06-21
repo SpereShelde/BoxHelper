@@ -36,11 +36,11 @@ Ctrl + a + d 退出screen后台; Type Ctrl + a + d to exit;
 
 - NOT support totheglory.im
 
-- Support Free, 2xFree
-
 - Support Deluge, rTorrent, qBittorrent, Transmission
 
 - 可选择监听页面; You can choose pages to listen
+
+- 可类型筛选种子; You can shift torrents by type(Sticky/Free)
 
 - 可按大小筛选种子; You can shift torrents by size
 

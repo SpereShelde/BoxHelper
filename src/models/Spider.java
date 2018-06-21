@@ -18,13 +18,16 @@ public class Spider implements Runnable {
 
     private String site, passkey, url, path;
     private ArrayList<String> freeIDs = new ArrayList<String>();
+    private int type; //
     private double min,max;
+
     private HtmlUnitDriver driver;
 
-    public Spider(String site, String url, String path, double min, double max, HtmlUnitDriver driver) {
+    public Spider(String site, String url, String path, int type, double min, double max, HtmlUnitDriver driver) {
         this.site = site;
         this.url = url;
         this.path = path;
+        this.type = type;
         this.min = min;
         this.max = max;
         this.driver = driver;
@@ -55,7 +58,7 @@ public class Spider implements Runnable {
         WebDriverWait webDriverWait = new WebDriverWait(driver, 5);
         synchronized (driver){
             driver.get(url);
-            System.out.println("Searching free torrent links from " + driver.getCurrentUrl() + "...");
+            System.out.println("Searching torrent links from " + driver.getCurrentUrl() + "...");
             try {
                 webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.className("torrents")));
                 originalString = driver.findElementByClassName("torrents").getAttribute("outerHTML");
@@ -66,7 +69,13 @@ public class Spider implements Runnable {
         }
 
         String searchString = originalString;
-        String regexString = "id=[0-9]*.*[fF]ree";
+        String regexString = "";
+        switch (type){
+            default:
+            case 1: regexString = "id=[0-9]*.*[fF]ree"; break;
+            case 2: regexString = "[Ss]ticky.*id=[0-9]*"; break;
+            case 3: regexString = "[Ss]ticky.*id=[0-9]*.*[fF]ree"; break;
+        }
         Pattern datePattern = Pattern.compile(regexString);
         Matcher dateMatcher = datePattern.matcher(searchString);
         int beEndIndex = 0;
@@ -78,7 +87,17 @@ public class Spider implements Runnable {
         while(dateMatcher.find()) {
 
             subString = dateMatcher.group();
-            id = subString.substring(3, subString.indexOf("&"));
+
+            Pattern idPattern = Pattern.compile("id=[0-9]*");
+            Matcher idMatcher = idPattern.matcher(subString);
+            if  (idMatcher.find()){
+                id  = idMatcher.group().substring(3);
+                if ("".equals(id)){
+                    System.out.println("Cannot find torrent id.");
+                    System.exit(106);
+                }
+            }
+
             Pattern sizeAndUnitPattern = Pattern.compile("id=" + id + ".*[GM][B]");
             Matcher sizeAndUnitMatcher = sizeAndUnitPattern.matcher(searchString.substring(searchString.indexOf(id)));
             if  (sizeAndUnitMatcher.find()){

@@ -61,7 +61,7 @@ public class BoxHelper {
                 e.printStackTrace();
             }
         }
-        System.out.println("Initialization done.\n");
+        System.out.println("Initialization done.");
     }
 
     public static void main(String[] args) {
@@ -69,12 +69,19 @@ public class BoxHelper {
 
         BoxHelper boxHelper = new BoxHelper();
         boxHelper.getConfigures();
+        int type = 0;
+        if ("true".equals(boxHelper.configures.get("isFree").toString())){
+            type += 1;
+        }
+        if ("true".equals(boxHelper.configures.get("isSticky").toString())) {
+            type += 2;
+        }
         int cpuThreads = Runtime.getRuntime().availableProcessors();
         int count  = 1;
         ArrayList<Spider> spiders = new ArrayList<>();
         ArrayList<String> urls = (ArrayList<String>) boxHelper.configures.get("urls");
         for (String url: urls){
-            spiders.add(new Spider(url.substring(url.indexOf("//") + 2, url.indexOf("/", 8)), url, boxHelper.configures.get("path").toString(), Double.parseDouble(boxHelper.configures.get("min").toString()), Double.parseDouble(boxHelper.configures.get("max").toString()), boxHelper.driver));
+            spiders.add(new Spider(url.substring(url.indexOf("//") + 2, url.indexOf("/", 8)), url, boxHelper.configures.get("path").toString(), type, Double.parseDouble(boxHelper.configures.get("min").toString()), Double.parseDouble(boxHelper.configures.get("max").toString()), boxHelper.driver));
         }
         while (true){
             ExecutorService executorService = Executors.newFixedThreadPool(cpuThreads);
