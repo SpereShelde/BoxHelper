@@ -100,18 +100,14 @@ public class BoxHelper {
                 while ((line = in.readLine()) != null) {
                     temp = line.replaceAll("\\s+", " ").split(" ");
                     currentSize = Integer.parseInt(temp[indexofA]);
-                    System.out.println("CurrentSize: " + currentSize);
                     if (currentSize > maxSize){
                         maxSize = currentSize;
                         maxDisk = temp[indexofM];
                     }
-                    System.out.println("MaxDisk: "+maxDisk);
                 }
+                in.close();
             } catch (Exception e) {
                 System.out.println("Cannot get max disk 1.");
-            } finally {
-                in.close();
-                System.exit(107);
             }
         } catch (Exception e) {
             System.out.println("Cannot get max disk 2.");
