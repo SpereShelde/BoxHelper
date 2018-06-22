@@ -32,7 +32,7 @@ public class BoxHelper {
 
         driver.setJavascriptEnabled(false);
         Logger logger = Logger.getLogger("");
-        logger.setLevel(Level.OFF);
+//        logger.setLevel(Level.OFF);
         try {
             configures = ConvertJson.convertConfigure("config.json");
         } catch (IOException e) {
