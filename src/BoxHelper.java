@@ -122,18 +122,15 @@ public class BoxHelper {
         boolean flag = true;
         try {
             Runtime runtime = Runtime.getRuntime();
-            Process process = runtime.exec("sh -c df -l | grep " + disk);
+            Process process = runtime.exec("df -l");
             BufferedReader in = null;
             int current = 0;
             try {
                 in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String[] temp = in.readLine().replaceAll("\\s+", " ").split(" ");
-                for (String s : temp){
-                    System.out.println(s);
-                    if (s.contains("%")){
-                        current = Integer.parseInt(s.replace("%", ""));
-                        System.out.println(current);
-                    }
+                in.readLine();
+                String line = in.readLine().replaceAll("\\s+", " ");
+                if (line.contains(disk)) {
+                    current = Integer.parseInt(line.substring(line.indexOf("%") - 2, line.indexOf("%")));
                 }
                 if (current > limit) flag = false;
                 in.close();
@@ -145,7 +142,6 @@ public class BoxHelper {
             System.out.println("Cannot restrict 2.");
             System.exit(110);
         }
-
         return flag;
     }
 
