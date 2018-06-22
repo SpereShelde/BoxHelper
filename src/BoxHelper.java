@@ -115,6 +115,7 @@ public class BoxHelper {
             System.out.println("Cannot get max disk 2.");
             System.exit(108);
         }
+        System.out.println(maxDisk);
         return maxDisk;
     }
 
@@ -128,6 +129,7 @@ public class BoxHelper {
             int current = 0;
             try {
                 in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                System.out.println(in.readLine().replaceAll("\\s+", " "));
                 String[] temp = in.readLine().replaceAll("\\s+", " ").split(" ");
                 for (String s : temp){
                     if (s.contains("%")){
