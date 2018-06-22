@@ -108,6 +108,7 @@ public class BoxHelper {
                 in.close();
             } catch (Exception e) {
                 System.out.println("Cannot get max disk 1.");
+                System.exit(107);
             }
         } catch (Exception e) {
             System.out.println("Cannot get max disk 2.");
@@ -140,6 +141,7 @@ public class BoxHelper {
                 in.close();
             } catch (Exception e) {
                 System.out.println("Cannot restrict 1.");
+                System.exit(109);
             }
         } catch (Exception e) {
             System.out.println("Cannot restrict 2.");
