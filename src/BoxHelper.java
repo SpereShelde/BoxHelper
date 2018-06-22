@@ -165,10 +165,14 @@ public class BoxHelper {
             type += 2;
         }
         String maxDisk = "";
+        System.out.println("Begin get disk.");
         int limit = Integer.parseInt(boxHelper.configures.get("diskLimit").toString());
         if (limit != -1 && limit != 0) {
             maxDisk = boxHelper.getMaxDisk();
+            System.out.println(maxDisk);
+            System.out.println(limit);
         }
+        System.out.println("Got disk.");
         int cpuThreads = Runtime.getRuntime().availableProcessors();
         int count  = 1;
         ArrayList<Spider> spiders = new ArrayList<>();
