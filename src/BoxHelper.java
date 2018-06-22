@@ -119,8 +119,6 @@ public class BoxHelper {
     }
 
     private boolean canContinue(String disk, int limit){
-        System.out.println(disk);
-        System.out.println(limit);
         boolean flag = true;
         try {
             Runtime runtime = Runtime.getRuntime();
@@ -129,7 +127,8 @@ public class BoxHelper {
             int current = 0;
             try {
                 in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line = in.readLine().replaceAll("\\s+", " ");
+                String line = in.readLine();
+                System.out.println(line);
                 if (line.contains(disk)) {
                     current = Integer.parseInt(line.substring(line.indexOf("%") - 2, line.indexOf("%")));
                     System.out.println(current);
