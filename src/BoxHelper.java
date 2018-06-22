@@ -71,22 +71,40 @@ public class BoxHelper {
         String maxDisk = "/home";
         try {
             Runtime runtime = Runtime.getRuntime();
-            Process process = runtime.exec("sh -c df -l | awk '{print $4, $5, $6}'");
+//            Process process = runtime.exec("sh -c df -l | /usr/bin/awk '{print $4, $5, $9}'");
+            Process process = runtime.exec("df -l");
             BufferedReader in = null;
             try {
                 in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String maxLine = null;
                 int maxSize = 0;
                 int currentSize = 0;
-                String line = in.readLine();
+                String line = in.readLine().replaceAll("\\s+", " ");
+                String[] temp = line.split(" ");
+                int indexofA = 0;
+                int indexofP = 0;
+                int indexofM = 0;
+                int count = 0;
+                for (String s:temp) {
+                    if (s.contains("Avail")){
+                        indexofA = count;
+                    }
+                    if (s.contains("%")){
+                        indexofP = count;
+                    }
+                    if (s.contains("Mount")){
+                        indexofM = count;
+                    }
+                    if (indexofA != 0 && indexofP != 0 && indexofM != 0 ) break;
+                    count++;
+                }
                 while ((line = in.readLine()) != null) {
-                    currentSize = Integer.parseInt(line.substring(0, line.indexOf(" ")));
+                    temp = line.replaceAll("\\s+", " ").split(" ");
+                    currentSize = Integer.parseInt(temp[indexofA]);
                     if (currentSize > maxSize){
                         maxSize = currentSize;
-                        maxLine = line;
+                        maxDisk = temp[indexofM];
                     }
                 }
-                maxDisk = maxLine.substring(maxLine.lastIndexOf(" ") + 1);
             } catch (Exception e) {
                 System.out.println("Cannot get max disk 1.");
             } finally {
@@ -105,12 +123,19 @@ public class BoxHelper {
 
         try {
             Runtime runtime = Runtime.getRuntime();
-            Process process = runtime.exec("sh -c df -l | grep " + disk + " | awk '{print $5, $6}'");
+            Process process = runtime.exec("sh -c df -l | grep " + disk);
             BufferedReader in = null;
+            int current = 0;
             try {
                 in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line = in.readLine();
-                if (Integer.parseInt(line.substring(0, line.indexOf("%"))) < limit) flag = false;
+                String[] temp = in.readLine().replaceAll("\\s+", " ").split(" ");
+                for (String s : temp){
+                    if (s.contains("%")){
+                        current = Integer.parseInt(s.substring(0, s.length() - 1));
+                        break;
+                    }
+                }
+                if (current > limit) flag = false;
             } catch (Exception e) {
                 System.out.println("Cannot restrict 1.");
             } finally {
