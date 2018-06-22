@@ -138,7 +138,7 @@ public class BoxHelper {
             type += 2;
         }
         String maxDisk = "";
-        int limit = Integer.getInteger(boxHelper.configures.get("diskLimit").toString());
+        int limit = Integer.parseInt(boxHelper.configures.get("diskLimit").toString());
         if (limit != -1 && limit != 0) {
             maxDisk = boxHelper.getMaxDisk();
         }
