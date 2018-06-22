@@ -68,7 +68,6 @@ public class BoxHelper {
 
     private String getMaxDisk(){
 
-        System.out.println("Begin getMaxDisk");
         String maxDisk = "/home";
         try {
             Runtime runtime = Runtime.getRuntime();
@@ -89,26 +88,24 @@ public class BoxHelper {
                 for (String s:temp) {
                     if (s.contains("Avail")){
                         indexofA = count;
-                        System.out.println(indexofA);
                     }
                     if (s.contains("%")){
                         indexofP = count;
-                        System.out.println(indexofP);
                     }
                     if (s.contains("Mount")){
                         indexofM = count;
-                        System.out.println(indexofM);
                     }
-                    if (indexofA != 0 && indexofP != 0 && indexofM != 0 ) break;
                     count++;
                 }
                 while ((line = in.readLine()) != null) {
                     temp = line.replaceAll("\\s+", " ").split(" ");
                     currentSize = Integer.parseInt(temp[indexofA]);
+                    System.out.println("CurrentSize: " + currentSize);
                     if (currentSize > maxSize){
                         maxSize = currentSize;
                         maxDisk = temp[indexofM];
                     }
+                    System.out.println("MaxDisk: "+maxDisk);
                 }
             } catch (Exception e) {
                 System.out.println("Cannot get max disk 1.");
@@ -170,9 +167,7 @@ public class BoxHelper {
             type += 2;
         }
         String maxDisk = "";
-        System.out.println("Begin get disk.");
         int limit = Integer.parseInt(boxHelper.configures.get("diskLimit").toString());
-        System.out.println(limit);
         if (limit != -1 && limit != 0) {
             maxDisk = boxHelper.getMaxDisk();
             System.out.println(maxDisk);
