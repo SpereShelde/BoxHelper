@@ -130,14 +130,14 @@ public class BoxHelper {
                 in.readLine();
                 String[] temp = in.readLine().replaceAll("\\s+", " ").split(" ");
                 for (String s : temp){
+                    System.out.println(s);
                     if (s.contains("%")){
-                        current = Integer.parseInt(s.substring(0, s.length() - 1));
+                        current = Integer.parseInt(s.replace("%", ""));
                         System.out.println(current);
                         break;
                     }
                 }
                 if (current > limit) flag = false;
-                System.out.println(flag);
                 in.close();
             } catch (Exception e) {
                 System.out.println("Cannot restrict 1.");
