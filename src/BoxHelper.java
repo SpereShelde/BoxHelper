@@ -113,13 +113,12 @@ public class BoxHelper {
             System.out.println("Cannot get max disk 2.");
             System.exit(108);
         }
-        System.out.println(maxDisk);
+        System.out.println("The max disk is " + maxDisk);
         return maxDisk;
     }
 
     private boolean canContinue(String disk, int limit){
         boolean flag = true;
-
         try {
             Runtime runtime = Runtime.getRuntime();
             Process process = runtime.exec("sh -c df -l | grep " + disk);
