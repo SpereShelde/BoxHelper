@@ -31,7 +31,7 @@ public class BoxHelper {
     private void getConfigures() {// Get configures from file.
 
         driver.setJavascriptEnabled(false);
-        Logger logger = Logger.getLogger("");
+//        Logger logger = Logger.getLogger("");
 //        logger.setLevel(Level.OFF);
         try {
             configures = ConvertJson.convertConfigure("config.json");
@@ -68,11 +68,13 @@ public class BoxHelper {
 
     private String getMaxDisk(){
 
+        System.out.println("Begin getMaxDisk");
         String maxDisk = "/home";
         try {
             Runtime runtime = Runtime.getRuntime();
 //            Process process = runtime.exec("sh -c df -l | /usr/bin/awk '{print $4, $5, $9}'");
             Process process = runtime.exec("df -l");
+            process.waitFor();
             BufferedReader in = null;
             try {
                 in = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -87,12 +89,15 @@ public class BoxHelper {
                 for (String s:temp) {
                     if (s.contains("Avail")){
                         indexofA = count;
+                        System.out.println(indexofA);
                     }
                     if (s.contains("%")){
                         indexofP = count;
+                        System.out.println(indexofP);
                     }
                     if (s.contains("Mount")){
                         indexofM = count;
+                        System.out.println(indexofM);
                     }
                     if (indexofA != 0 && indexofP != 0 && indexofM != 0 ) break;
                     count++;
@@ -157,7 +162,6 @@ public class BoxHelper {
 
         BoxHelper boxHelper = new BoxHelper();
         boxHelper.getConfigures();
-        System.out.println(1);
         int type = 0;
         if ("true".equals(boxHelper.configures.get("isFree").toString())){
             type += 1;
@@ -165,14 +169,13 @@ public class BoxHelper {
         if ("true".equals(boxHelper.configures.get("isSticky").toString())) {
             type += 2;
         }
-        System.out.println(2);
         String maxDisk = "";
         System.out.println("Begin get disk.");
         int limit = Integer.parseInt(boxHelper.configures.get("diskLimit").toString());
+        System.out.println(limit);
         if (limit != -1 && limit != 0) {
             maxDisk = boxHelper.getMaxDisk();
             System.out.println(maxDisk);
-            System.out.println(limit);
         }
         System.out.println("Got disk.");
         int cpuThreads = Runtime.getRuntime().availableProcessors();
