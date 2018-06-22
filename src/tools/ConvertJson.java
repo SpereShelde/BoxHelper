@@ -53,6 +53,9 @@ public class ConvertJson {
         if (object.has("path")) {
             configures.put("path", object.get("path").getAsString());
         }
+        if (object.has("diskLimit")) {
+            configures.put("diskLimit", object.get("diskLimit").getAsInt());
+        }
         if (object.has("cycle")) {
             configures.put("cycle", object.get("cycle").getAsDouble());
         }
@@ -104,3 +107,5 @@ public class ConvertJson {
         return cookies;
     }
 }
+
+

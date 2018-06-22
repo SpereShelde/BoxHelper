@@ -4,7 +4,9 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import tools.ConvertJson;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,8 +31,8 @@ public class BoxHelper {
     private void getConfigures() {// Get configures from file.
 
         driver.setJavascriptEnabled(false);
-        Logger logger = Logger.getLogger("");
-        logger.setLevel(Level.OFF);
+//        Logger logger = Logger.getLogger("");
+//        logger.setLevel(Level.OFF);
         try {
             configures = ConvertJson.convertConfigure("config.json");
         } catch (IOException e) {
@@ -64,8 +66,87 @@ public class BoxHelper {
         System.out.println("Initialization done.");
     }
 
-    public static void main(String[] args) {
+    private String getMaxDisk(){
 
+        String maxDisk = "/home";
+        try {
+            Runtime runtime = Runtime.getRuntime();
+//            Process process = runtime.exec("sh -c df -l | /usr/bin/awk '{print $4, $5, $9}'");
+            Process process = runtime.exec("df -l");
+            process.waitFor();
+            BufferedReader in = null;
+            try {
+                in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                int maxSize = 0;
+                int currentSize = 0;
+                String line = in.readLine().replaceAll("\\s+", " ");
+                String[] temp = line.split(" ");
+                int indexofA = 0;
+                int indexofP = 0;
+                int indexofM = 0;
+                int count = 0;
+                for (String s:temp) {
+                    if (s.contains("Avail")){
+                        indexofA = count;
+                    }
+                    if (s.contains("%")){
+                        indexofP = count;
+                    }
+                    if (s.contains("Mount")){
+                        indexofM = count;
+                    }
+                    count++;
+                }
+                while ((line = in.readLine()) != null) {
+                    temp = line.replaceAll("\\s+", " ").split(" ");
+                    currentSize = Integer.parseInt(temp[indexofA]);
+                    if (currentSize > maxSize){
+                        maxSize = currentSize;
+                        maxDisk = temp[indexofM];
+                    }
+                }
+                in.close();
+            } catch (Exception e) {
+                System.out.println("Cannot get max disk 1.");
+                System.exit(107);
+            }
+        } catch (Exception e) {
+            System.out.println("Cannot get max disk 2.");
+            System.exit(108);
+        }
+        System.out.println("The max disk is " + maxDisk);
+        return maxDisk;
+    }
+
+    private boolean canContinue(String disk, int limit){
+        boolean flag = true;
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            Process process = runtime.exec("df -l");
+            BufferedReader in = null;
+            int current = 0;
+            try {
+                in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line = in.readLine();
+                while (!line.contains(disk)){
+                    line = in.readLine();
+                }
+                current = Integer.parseInt(line.substring(line.indexOf("%") - 2, line.indexOf("%")));
+                System.out.println("Current disk use is : " + current);
+                if (current > limit) flag = false;
+                in.close();
+            } catch (Exception e) {
+                System.out.println("Cannot restrict 1.");
+                System.exit(109);
+            }
+        } catch (Exception e) {
+            System.out.println("Cannot restrict 2.");
+            System.exit(110);
+        }
+        return flag;
+    }
+
+    public static void main(String[] args) {
 
         BoxHelper boxHelper = new BoxHelper();
         boxHelper.getConfigures();
@@ -76,6 +157,11 @@ public class BoxHelper {
         if ("true".equals(boxHelper.configures.get("isSticky").toString())) {
             type += 2;
         }
+        String maxDisk = "";
+        int limit = Integer.parseInt(boxHelper.configures.get("diskLimit").toString());
+        if (limit != -1 && limit != 0) {
+            maxDisk = boxHelper.getMaxDisk();
+        }
         int cpuThreads = Runtime.getRuntime().availableProcessors();
         int count  = 1;
         ArrayList<Spider> spiders = new ArrayList<>();
@@ -84,6 +170,14 @@ public class BoxHelper {
             spiders.add(new Spider(url.substring(url.indexOf("//") + 2, url.indexOf("/", 8)), url, boxHelper.configures.get("path").toString(), type, Double.parseDouble(boxHelper.configures.get("min").toString()), Double.parseDouble(boxHelper.configures.get("max").toString()), boxHelper.driver));
         }
         while (true){
+            if (limit != -1 && limit != 0) {
+                if (!boxHelper.canContinue(maxDisk, limit)){
+                    System.out.println("Reached limit, exit.");
+                    System.exit(111);
+                } else {
+                    System.out.println("Under limit, continue.");
+                }
+            }
             ExecutorService executorService = Executors.newFixedThreadPool(cpuThreads);
             System.out.println("\nBoxHelper " + count + " begins at " + time());
 

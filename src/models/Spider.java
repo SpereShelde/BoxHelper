@@ -81,7 +81,7 @@ public class Spider implements Runnable {
         int beEndIndex = 0;
 
         double size = 0;
-        if (this.max == -1) this.max = 65535;
+        if (this.max == -1 || this.max == 0) this.max = 65535;
         String id = "";
         String subString = "";
         while(dateMatcher.find()) {
