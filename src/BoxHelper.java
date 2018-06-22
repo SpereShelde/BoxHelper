@@ -128,11 +128,11 @@ public class BoxHelper {
             try {
                 in = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line = in.readLine();
-                System.out.println(line);
-                if (line.contains(disk)) {
-                    current = Integer.parseInt(line.substring(line.indexOf("%") - 2, line.indexOf("%")));
-                    System.out.println(current);
+                while (!line.contains(disk)){
+                    line = in.readLine();
                 }
+                current = Integer.parseInt(line.substring(line.indexOf("%") - 2, line.indexOf("%")));
+                System.out.println(current);
                 if (current > limit) flag = false;
                 in.close();
             } catch (Exception e) {
