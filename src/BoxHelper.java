@@ -126,20 +126,20 @@ public class BoxHelper {
             int current = 0;
             try {
                 in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                System.out.println(in.readLine().replaceAll("\\s+", " "));
+                in.readLine();
                 String[] temp = in.readLine().replaceAll("\\s+", " ").split(" ");
                 for (String s : temp){
                     if (s.contains("%")){
                         current = Integer.parseInt(s.substring(0, s.length() - 1));
+                        System.out.println(current);
                         break;
                     }
                 }
                 if (current > limit) flag = false;
+                System.out.println(flag);
+                in.close();
             } catch (Exception e) {
                 System.out.println("Cannot restrict 1.");
-            } finally {
-                in.close();
-                System.exit(109);
             }
         } catch (Exception e) {
             System.out.println("Cannot restrict 2.");
@@ -165,9 +165,7 @@ public class BoxHelper {
         int limit = Integer.parseInt(boxHelper.configures.get("diskLimit").toString());
         if (limit != -1 && limit != 0) {
             maxDisk = boxHelper.getMaxDisk();
-            System.out.println(maxDisk);
         }
-        System.out.println("Got disk.");
         int cpuThreads = Runtime.getRuntime().availableProcessors();
         int count  = 1;
         ArrayList<Spider> spiders = new ArrayList<>();
