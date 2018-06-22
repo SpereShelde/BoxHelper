@@ -132,7 +132,7 @@ public class BoxHelper {
                     line = in.readLine();
                 }
                 current = Integer.parseInt(line.substring(line.indexOf("%") - 2, line.indexOf("%")));
-                System.out.println(current);
+                System.out.println("Current disk use is : " + current);
                 if (current > limit) flag = false;
                 in.close();
             } catch (Exception e) {
@@ -143,7 +143,6 @@ public class BoxHelper {
             System.out.println("Cannot restrict 2.");
             System.exit(110);
         }
-        System.out.println(flag);
         return flag;
     }
 
@@ -175,6 +174,8 @@ public class BoxHelper {
                 if (!boxHelper.canContinue(maxDisk, limit)){
                     System.out.println("Reached limit, exit.");
                     System.exit(111);
+                } else {
+                    System.out.println("Under limit, continue.");
                 }
             }
             ExecutorService executorService = Executors.newFixedThreadPool(cpuThreads);
