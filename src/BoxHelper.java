@@ -127,14 +127,12 @@ public class BoxHelper {
             int current = 0;
             try {
                 in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                in.readLine();
                 String[] temp = in.readLine().replaceAll("\\s+", " ").split(" ");
                 for (String s : temp){
                     System.out.println(s);
                     if (s.contains("%")){
                         current = Integer.parseInt(s.replace("%", ""));
                         System.out.println(current);
-                        break;
                     }
                 }
                 if (current > limit) flag = false;
