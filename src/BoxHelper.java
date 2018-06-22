@@ -157,6 +157,7 @@ public class BoxHelper {
 
         BoxHelper boxHelper = new BoxHelper();
         boxHelper.getConfigures();
+        System.out.println(1);
         int type = 0;
         if ("true".equals(boxHelper.configures.get("isFree").toString())){
             type += 1;
@@ -164,6 +165,7 @@ public class BoxHelper {
         if ("true".equals(boxHelper.configures.get("isSticky").toString())) {
             type += 2;
         }
+        System.out.println(2);
         String maxDisk = "";
         System.out.println("Begin get disk.");
         int limit = Integer.parseInt(boxHelper.configures.get("diskLimit").toString());
