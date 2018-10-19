@@ -1,50 +1,12 @@
 # BoxHelper
 
-## 使用; How to use
+## Usage
 
-克隆仓库; Clone this repository:
-
-`git clone -b DE https://github.com/SpereShelde/BoxHelper.git && cd BoxHelper`
-
-安装环境，仅使用一次; Build environment for the first time: `bash java.sh`
-
-编辑配置; Edit confiure file：`vi config.json` [帮助Help](https://github.com/SpereShelde/BoxHelper/wiki/DE%E5%88%86%E6%94%AF%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E)
-
-添加Cookie文件; Import cookie file：
-
-在cookies目录下，使用json格式保存您的站点cookie，命名为`站点域名`.json
-
-Create a file under 'cookies', names 'WEBSITE-DOMAIN'.json, to save cookie.
-
-可以添加多个Cookie文件, You can add several cookie files. [帮助Help](https://github.com/SpereShelde/BoxHelper/wiki/%E4%BF%9D%E5%AD%98Cookie;-How-to-save-cookies)
-
-开启后台; Create a background bash：`screen -R BoxHelper`
-
-运行BoxHelper; Run BoxHelper：`java -jar BoxHelper.jar`
-
-Ctrl + a + d 退出screen后台; Type Ctrl + a + d to exit;
+wget --no-check-certificate -qO BoxHelper.sh https://raw.githubusercontent.com/SpereShelde/Scripts/master/BoxHelper.sh && bash BoxHelper.sh
 
 ---
 
-升级(替换BoxHelper.jar); Upgrade(Download new BoxHelper.jar)：
-
-`wget 'https://github.com/SpereShelde/BoxHelper/blob/master/BoxHelper.jar?raw=true' -O BoxHelper.jar`
-
-## 目前完成度; Status
-
-- Support M-Team, hdcmct.org, chdbits.co, hdchina.org, pt.btschool.net, open.cd and more unknown sites.
-
-- NOT support totheglory.im
-
-- Support Deluge, rTorrent, qBittorrent, Transmission
-
-- 可选择监听页面; You can choose pages to listen
-
-- 可类型筛选种子; You can shift QBTorrents by type(Sticky/Free)
-
-- 可按大小筛选种子; You can shift QBTorrents by size
-
-## 注意事项; Watch this！ 
+## Watch this！ 
 
 - BoxHelper 需要你提供Cookie，并会获取你的passkey，但是 BoxHelper 不会上传他们
 
@@ -58,3 +20,8 @@ Ctrl + a + d 退出screen后台; Type Ctrl + a + d to exit;
 
 - To feedback bugs or want us to test more sites, just open an issue or mail me at `spereshelde#gmail.com`
 
+## To Do List
+
+- 支持 tr & rt
+
+- Free种变黑的处理策略
