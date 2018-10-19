@@ -4,11 +4,11 @@
 
 克隆仓库; Clone this repository:
 
-`git clone https://github.com/SpereShelde/BoxHelper.git && cd BoxHelper`
+`git clone -b DE https://github.com/SpereShelde/BoxHelper.git && cd BoxHelper`
 
 安装环境，仅使用一次; Build environment for the first time: `bash java.sh`
 
-编辑配置; Edit confiure file：`vi config.json` [帮助Help](https://github.com/SpereShelde/BoxHelper/wiki/Pro%E5%88%86%E6%94%AF%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E)
+编辑配置; Edit confiure file：`vi config.json` [帮助Help](https://github.com/SpereShelde/BoxHelper/wiki/DE%E5%88%86%E6%94%AF%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E)
 
 添加Cookie文件; Import cookie file：
 
