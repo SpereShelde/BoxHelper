@@ -4,7 +4,7 @@
 
 克隆仓库; Clone this repository:
 
-`git clone -b DE https://github.com/SpereShelde/BoxHelper.git && cd BoxHelper`
+`git clone https://github.com/SpereShelde/BoxHelper.git && cd BoxHelper`
 
 安装环境，仅使用一次; Build environment for the first time: `bash java.sh`
 
