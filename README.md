@@ -40,9 +40,9 @@ Ctrl + a + d 退出screen后台; Type Ctrl + a + d to exit;
 
 - 可选择监听页面; You can choose pages to listen
 
-- 可类型筛选种子; You can shift torrents by type(Sticky/Free)
+- 可类型筛选种子; You can shift QBTorrents by type(Sticky/Free)
 
-- 可按大小筛选种子; You can shift torrents by size
+- 可按大小筛选种子; You can shift QBTorrents by size
 
 ## 注意事项; Watch this！ 
 
