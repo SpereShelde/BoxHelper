@@ -2,7 +2,7 @@
 
 ## Usage
 
-wget --no-check-certificate -qO BoxHelper.sh https://raw.githubusercontent.com/SpereShelde/Scripts/master/BoxHelper.sh && bash BoxHelper.sh
+`wget --no-check-certificate -qO BoxHelper.sh https://raw.githubusercontent.com/SpereShelde/Scripts/master/BoxHelper.sh && bash BoxHelper.sh`
 
 ---
 
