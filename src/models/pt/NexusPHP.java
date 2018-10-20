@@ -122,7 +122,8 @@ public class NexusPHP extends Pt implements Runnable {
                         size *= 1024;
                     }
                 }
-                if (this.urls.size() == 0 && !this.load) this.urls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
+                System.out.println(this.load);
+                if (this.urls.size() == 0 && !this.load) this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
                 if (!this.urls.contains("https://totheglory.im/dl/" + id + "/" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
                         System.out.println(this.cli + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
@@ -137,6 +138,10 @@ public class NexusPHP extends Pt implements Runnable {
                 beEndIndex = subIndex + subLength + beEndIndex;
                 searchString = originalString.substring(beEndIndex);
                 dateMatcher = datePattern.matcher(searchString);
+            }
+            if (this.urls.size() == 0 && !this.load) {
+                this.urls.addAll(this.newUrls);
+                this.newUrls = new ArrayList<String>();
             }
         } else {
             driver.get(url);
@@ -188,7 +193,7 @@ public class NexusPHP extends Pt implements Runnable {
                         size *= 1024;
                     }
                 }
-                if (this.urls.size() == 0 && !this.load) this.urls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
+                if (this.urls.size() == 0 && !this.load) this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
                 if (!this.urls.contains("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
                         System.out.println(this.cli + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
@@ -204,13 +209,17 @@ public class NexusPHP extends Pt implements Runnable {
                 searchString = originalString.substring(beEndIndex);
                 dateMatcher = datePattern.matcher(searchString);
             }
+            if (this.urls.size() == 0 && !this.load) {
+                this.urls.addAll(this.newUrls);
+                this.newUrls = new ArrayList<String>();
+            }
         }
     }
 
     @Override
     public void run() {
         this.getFreeIDs();
-        switch (this.cli){
+        switch (this.cli.toLowerCase()){
             default:
             case "de":
                 Deluge deluge = new Deluge(this.cliConfig[0], this.cliConfig[1], url, this.urls, this.down, this.up);
