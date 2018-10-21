@@ -44,7 +44,7 @@ public class NexusPHP extends Pt implements Runnable {
         if (url.contains("m-team") || url.contains("hdcmct") || url.contains("hdsky") ||
             url.contains("hdhome") || url.contains("keepfrds") || url.contains("hdtime") ||
             url.contains("totheglory") || url.contains("open") || url.contains("hdchina") ||
-            url.contains("chdbits") || url.contains("ourbits")){
+            url.contains("chdbits") || url.contains("ourbits") || url.contains("btschool")){
             return true;
         } else return false;
     }
@@ -122,16 +122,15 @@ public class NexusPHP extends Pt implements Runnable {
                         size *= 1024;
                     }
                 }
-                System.out.println(this.load);
                 if (this.urls.size() == 0 && !this.load) this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
                 if (!this.urls.contains("https://totheglory.im/dl/" + id + "/" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
-                        System.out.println(this.cli + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
+                        System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
                         this.urls.add("https://totheglory.im/dl/" + id + "/" + this.passkey);
                         this.newUrls.add("https://totheglory.im/dl/" + id + "/" + this.passkey);
                     }
                 } else {
-                    System.out.println(this.cli + ": already added this torrent, id: " + id + "... Skip");
+                    System.out.println(this.cli.toUpperCase() + ": already added this torrent, id: " + id + "... Skip");
                 }
                 int subIndex = searchString.indexOf(subString);
                 int subLength = subString.length();
@@ -196,12 +195,12 @@ public class NexusPHP extends Pt implements Runnable {
                 if (this.urls.size() == 0 && !this.load) this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
                 if (!this.urls.contains("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
-                        System.out.println(this.cli + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
+                        System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
                         this.urls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
                         this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
                     }
                 } else {
-                    System.out.println(this.cli + ": already added this torrent, id: " + id + "... Skip");
+                    System.out.println(this.cli.toUpperCase() + ": already added this torrent, id: " + id + "... Skip");
                 }
                 int subIndex = searchString.indexOf(subString);
                 int subLength = subString.length();

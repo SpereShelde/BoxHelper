@@ -28,7 +28,8 @@ public class HttpHelper {
 
     public static CookieStore cookieStore = null;
 
-    public static String doGet(String destination, String userAgent, String cookieValue, String host) throws IOException {
+
+    public static String doGetToQB(String destination, String userAgent, String host) throws IOException {
 
         String responseString = "";
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -36,7 +37,6 @@ public class HttpHelper {
         // 创建httpget
         HttpGet httpget = new HttpGet(destination);
         httpget.setHeader("User-Agent", userAgent);
-        httpget.setHeader("Cookie", "SID=" + cookieValue);
         httpget.setHeader("Host", host);
 
         // 执行get请求.
@@ -56,6 +56,59 @@ public class HttpHelper {
         return responseString;
     }
 
+    public static String doGetToQBWithAuth(String destination, String sid, String userAgent, String host) throws IOException {
+
+        String responseString = "";
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        // 创建httpget
+        HttpGet httpget = new HttpGet(destination);
+        httpget.setHeader("User-Agent", userAgent);
+        httpget.setHeader("Cookie", "SID=" + sid);
+        httpget.setHeader("Host", host);
+
+        // 执行get请求.
+        CloseableHttpResponse response = httpclient.execute(httpget);
+        try {
+            // 获取响应实体
+            HttpEntity entity = response.getEntity();
+            // 打印响应状态
+            if (entity != null && response.getStatusLine().toString().contains("200")) {
+                // 打印响应内容
+                responseString = EntityUtils.toString(entity) ;
+            }
+        } finally {
+            response.close();
+            httpclient.close();
+        }
+        return responseString;
+    }
+
+    public static String loginToQB(String destination, String userAgent, String username, String passwd, String host) throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(destination);
+        //创建参数队列
+        httpPost.addHeader("User-Agent", userAgent);
+        httpPost.addHeader("Host", host);
+        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
+        multipartEntityBuilder.addTextBody("username", username);
+        multipartEntityBuilder.addTextBody("password", passwd);
+        httpPost.setEntity(multipartEntityBuilder.build());
+        CloseableHttpResponse response = httpClient.execute(httpPost);
+        HttpEntity entity = null;
+        try {
+            // 获取响应实体
+            entity = response.getEntity();
+
+        } finally {
+            response.close();
+            httpClient.close();
+        }
+        String setCookie = response.getFirstHeader("Set-Cookie").getValue();
+        String sessionId = setCookie.substring("SID=".length(), setCookie.indexOf(";"));
+        return sessionId;
+    }
+
     public static boolean doPostToQB(String destination, String userAgent, String sid, String host, Map<String, String> contents) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(destination);
@@ -71,6 +124,7 @@ public class HttpHelper {
         try {
             // 获取响应实体
             entity = response.getEntity();
+
         } finally {
             response.close();
             httpClient.close();
@@ -96,7 +150,6 @@ public class HttpHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        CookieStore cookieStore = new BasicCookieStore();
         String setCookie = response.getFirstHeader("Set-Cookie").getValue();
         String sessionId = setCookie.substring("_session_id=".length(), setCookie.indexOf(";"));
         httpPost.addHeader("Cookie", "_session_id=" + sessionId);
@@ -189,29 +242,29 @@ public class HttpHelper {
         }
     }
 
-    public static boolean doPostNormalForm(String destination, String userAgent, String cookieValue, String host, Map<String, String> contents) throws IOException {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(destination);
-        //创建参数队列
-        httpPost.addHeader("User-Agent", userAgent);
-        httpPost.addHeader("Cookie", "SID=" + cookieValue);
-        httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        httpPost.addHeader("Host", host);
-
-        List <NameValuePair> nvps = new ArrayList <NameValuePair>();
-        contents.forEach((k,v) -> nvps.add(new BasicNameValuePair(k, v)));
-        httpPost.setEntity(new UrlEncodedFormEntity(nvps));
-        CloseableHttpResponse response = httpClient.execute(httpPost);
-        HttpEntity entity = null;
-        try {
-            // 获取响应实体
-            entity = response.getEntity();
-
-        } finally {
-            response.close();
-            httpClient.close();
-        }
-        return entity != null && response.getStatusLine().toString().contains("200");//Not precise
-    }
+//    public static boolean doPostNormalForm(String destination, String userAgent, String cookieValue, String host, Map<String, String> contents) throws IOException {
+//        CloseableHttpClient httpClient = HttpClients.createDefault();
+//        HttpPost httpPost = new HttpPost(destination);
+//        //创建参数队列
+//        httpPost.addHeader("User-Agent", userAgent);
+//        httpPost.addHeader("Cookie", "SID=" + cookieValue);
+//        httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+//        httpPost.addHeader("Host", host);
+//
+//        List <NameValuePair> nvps = new ArrayList <NameValuePair>();
+//        contents.forEach((k,v) -> nvps.add(new BasicNameValuePair(k, v)));
+//        httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+//        CloseableHttpResponse response = httpClient.execute(httpPost);
+//        HttpEntity entity = null;
+//        try {
+//            // 获取响应实体
+//            entity = response.getEntity();
+//
+//        } finally {
+//            response.close();
+//            httpClient.close();
+//        }
+//        return entity != null && response.getStatusLine().toString().contains("200");//Not precise
+//    }
 
 }

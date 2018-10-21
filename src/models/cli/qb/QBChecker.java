@@ -16,19 +16,27 @@ import java.util.Map;
  */
 public class QBChecker implements Runnable {
 
-    private String sessionID;
+    private String username, passwd;
     private String webUI;
+    private String sid;
     private long currentSize = 0;
     private long space;
     private String action;
     private int num = 0;
 
-    public QBChecker(String webUI, String sessionID, long space, String action, int num) {
-        this.sessionID = sessionID;
+    public QBChecker(String webUI, String unpd, long space, String action, int num) {
         this.webUI = webUI;
         this.space = space;
         this.action = action;
         this.num = num;
+        String[] usernamePasswd = unpd.split("-");
+        this.username = usernamePasswd[0];
+        this.passwd = usernamePasswd[1];
+        try {
+            this.sid = HttpHelper.loginToQB(webUI + "/login", "BoxHelper", username, passwd, "127.0.0.1");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -46,7 +54,7 @@ public class QBChecker implements Runnable {
                 case "large": act = "size"; break;
                 case "ratio": act = "ratio"; break;
             }
-            QBTorrents = ConvertJson.convertQBTorrents(HttpHelper.doGet(webUI + "/query/torrents?filter=completed&category=BoxHelper&sort=" + act, "BoxHelper", sessionID, "127.0.0.1"));
+            QBTorrents = ConvertJson.convertQBTorrents(HttpHelper.doGetToQBWithAuth(webUI + "/query/torrents?filter=completed&category=BoxHelper&sort=" + act, sid, "BoxHelper", "127.0.0.1"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,7 +97,7 @@ public class QBChecker implements Runnable {
             hashs.deleteCharAt(hashs.length() - 1);
             contents.put("hashes", hashs.toString());
             try {
-                HttpHelper.doPostNormalForm(webUI + "/command/deletePerm", "Fiddler", sessionID, "127.0.0.1", contents);
+                HttpHelper.doPostToQB(webUI + "/command/deletePerm", "Fiddler", sid, "127.0.0.1", contents);
                 System.out.println("QB: successfully deleted torrent.");
             } catch (IOException e) {
                 e.printStackTrace();

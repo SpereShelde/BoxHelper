@@ -14,8 +14,10 @@ import java.util.Map;
  */
 public class QBittorrent extends Cli{
 
-    private String sessionID;
+    private String username, passwd;
     private String webUI;
+    private String unpd;
+    private String sid;
     private String site;
     private ArrayList<String> urls = new ArrayList<>();
     private double upload, download;
@@ -25,8 +27,8 @@ public class QBittorrent extends Cli{
         this.urls = urls;
     }
 
-    public QBittorrent(String webUI, String sessionID, String site, ArrayList<String> urls, double download, double upload) {
-        this.sessionID = sessionID;
+    public QBittorrent(String webUI, String unpd, String site, ArrayList<String> urls, double download, double upload) {
+        this.unpd = unpd;
         if (webUI.lastIndexOf("/") == webUI.length() - 1) {
             this.webUI = webUI.substring(0, webUI.length() - 1);
         } else {
@@ -36,13 +38,21 @@ public class QBittorrent extends Cli{
         this.urls = urls;
         this.upload = upload;
         this.download = download;
+        String[] usernamePasswd = unpd.split("-");
+        this.username = usernamePasswd[0];
+        this.passwd = usernamePasswd[1];
+        try {
+            this.sid = HttpHelper.loginToQB(webUI + "/login", "BoxHelper", username, passwd, "127.0.0.1");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addTorrents(){
 
         if (this.apiVersion == 0){
             try {
-                apiVersion = Integer.parseInt(HttpHelper.doGet(webUI + "/version/api", "Fiddler", sessionID, "127.0.0.1"));
+                apiVersion = Integer.parseInt(HttpHelper.doGetToQB(webUI + "/version/api", "BoxHelper", "127.0.0.1"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -56,7 +66,7 @@ public class QBittorrent extends Cli{
             contents.put("upLimit", new BigDecimal(upload * 1024 * 1024 + "").toPlainString());
             contents.put("category", "BoxHelper");
             try {
-                Boolean success =  HttpHelper.doPostToQB(webUI + "/command/download", "Fiddler", sessionID, "127.0.0.1", contents);
+                Boolean success =  HttpHelper.doPostToQB(webUI + "/command/download", "BoxHelper", sid, "127.0.0.1", contents);
                 if (success) System.out.println("QB: successfully add torrents in " + site + ".");
                 else System.out.println("QB: cannot add torrents above, please check your session ID.");
             } catch (IOException e) {
