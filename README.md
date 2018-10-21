@@ -4,7 +4,9 @@
 
 `screen -R boxHelper`
 
-`wget --no-check-certificate -qO BoxHelper.sh https://github.com/SpereShelde/Scripts/blob/master/boxHelper.sh boxHelper.sh`
+`wget --no-check-certificate -qO boxHelper.sh https://github.com/SpereShelde/Scripts/blob/master/boxHelper.sh`
+
+`bash boxHelper.sh`
 
 `Ctrl + a + d` 退出 screen
 
