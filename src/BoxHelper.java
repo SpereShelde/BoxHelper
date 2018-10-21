@@ -1,12 +1,13 @@
 import com.gargoylesoftware.htmlunit.BrowserVersion;
-import models.Spider;
+import models.cli.de.DEChecker;
+import models.pt.NexusPHP;
+import models.cli.qb.QBChecker;
+import models.pt.PTChecker;
+import models.pt.Pt;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import tools.ConvertJson;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,16 +26,14 @@ import static java.lang.Thread.sleep;
 public class BoxHelper {
 
     private Map configures = new HashMap();
-    private Map passkeys = new HashMap();
-    private HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.CHROME);
+    private Map cookies = new HashMap();
+    private Map drivers = new HashMap();
+    private int urlNum = 1;
 
     private void getConfigures() {// Get configures from file.
 
-        driver.setJavascriptEnabled(false);
-//        Logger logger = Logger.getLogger("");
-//        logger.setLevel(Level.OFF);
         try {
-            configures = ConvertJson.convertConfigure("config.json");
+            this.configures = ConvertJson.convertConfigure("config.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,141 +51,76 @@ public class BoxHelper {
             e.printStackTrace();
         }
 
+        System.out.println("Loading cookies ...");
         for (Path path: jsonFiles) {
-            System.out.println("Loading " +  path.getFileName().toString() + "...");
             try {
-                driver.get("http://" + path.getFileName().toString().substring(0, path.getFileName().toString().length() - 5));
-                for (Cookie cookie :ConvertJson.convertCookie(path.toString())) {
-                    driver.manage().addCookie(cookie);
-                }
+                String domainName = path.getFileName().toString();
+                cookies.put(domainName.substring(0, domainName.lastIndexOf(".")), ConvertJson.convertCookie(path.toString()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+        Map<String, String> urlSizeSpeedCli = (Map<String, String>) this.configures.get("url_size_speed_cli");
+        this.urlNum = urlSizeSpeedCli.size();
+        urlSizeSpeedCli.forEach((url, sizeSpeedCli) -> {
+            HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.FIREFOX_45, false);
+            String domain = url.substring(url.indexOf("//") + 2, url.indexOf("/", url.indexOf("//") + 2));
+            driver.get("https://" + domain);
+            ArrayList<Cookie> cookiesT = (ArrayList) cookies.get(domain);
+            cookiesT.forEach(cookie -> driver.manage().addCookie(cookie));
+            drivers.put(url, driver);
+        });
+
         System.out.println("Initialization done.");
-    }
-
-    private String getMaxDisk(){
-
-        String maxDisk = "/home";
-        try {
-            Runtime runtime = Runtime.getRuntime();
-//            Process process = runtime.exec("sh -c df -l | /usr/bin/awk '{print $4, $5, $9}'");
-            Process process = runtime.exec("df -l");
-            process.waitFor();
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                int maxSize = 0;
-                int currentSize = 0;
-                String line = in.readLine().replaceAll("\\s+", " ");
-                String[] temp = line.split(" ");
-                int indexofA = 0;
-                int indexofP = 0;
-                int indexofM = 0;
-                int count = 0;
-                for (String s:temp) {
-                    if (s.contains("Avail")){
-                        indexofA = count;
-                    }
-                    if (s.contains("%")){
-                        indexofP = count;
-                    }
-                    if (s.contains("Mount")){
-                        indexofM = count;
-                    }
-                    count++;
-                }
-                while ((line = in.readLine()) != null) {
-                    temp = line.replaceAll("\\s+", " ").split(" ");
-                    currentSize = Integer.parseInt(temp[indexofA]);
-                    if (currentSize > maxSize){
-                        maxSize = currentSize;
-                        maxDisk = temp[indexofM];
-                    }
-                }
-                in.close();
-            } catch (Exception e) {
-                System.out.println("Cannot get max disk 1.");
-                System.exit(107);
-            }
-        } catch (Exception e) {
-            System.out.println("Cannot get max disk 2.");
-            System.exit(108);
-        }
-        System.out.println("The max disk is " + maxDisk);
-        return maxDisk;
-    }
-
-    private boolean canContinue(String disk, int limit){
-        boolean flag = true;
-        try {
-            Runtime runtime = Runtime.getRuntime();
-            Process process = runtime.exec("df -l");
-            BufferedReader in = null;
-            int current = 0;
-            try {
-                in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line = in.readLine();
-                while (!line.contains(disk)){
-                    line = in.readLine();
-                }
-                current = Integer.parseInt(line.substring(line.indexOf("%") - 2, line.indexOf("%")));
-                System.out.println("Current disk use is : " + current);
-                if (current > limit) flag = false;
-                in.close();
-            } catch (Exception e) {
-                System.out.println("Cannot restrict 1.");
-                System.exit(109);
-            }
-        } catch (Exception e) {
-            System.out.println("Cannot restrict 2.");
-            System.exit(110);
-        }
-        return flag;
     }
 
     public static void main(String[] args) {
 
+        Logger logger = Logger.getLogger("");
+        logger.setLevel(Level.OFF);
         BoxHelper boxHelper = new BoxHelper();
         boxHelper.getConfigures();
-        int type = 0;
-        if ("true".equals(boxHelper.configures.get("isFree").toString())){
-            type += 1;
-        }
-        if ("true".equals(boxHelper.configures.get("isSticky").toString())) {
-            type += 2;
-        }
-        String maxDisk = "";
-        int limit = Integer.parseInt(boxHelper.configures.get("diskLimit").toString());
-        if (limit != -1 && limit != 0) {
-            maxDisk = boxHelper.getMaxDisk();
-        }
-        int cpuThreads = Runtime.getRuntime().availableProcessors();
+        int cpuThreads = Runtime.getRuntime().availableProcessors()<boxHelper.urlNum?Runtime.getRuntime().availableProcessors():boxHelper.urlNum;
         int count  = 1;
-        ArrayList<Spider> spiders = new ArrayList<>();
-        ArrayList<String> urls = (ArrayList<String>) boxHelper.configures.get("urls");
-        for (String url: urls){
-            spiders.add(new Spider(url.substring(url.indexOf("//") + 2, url.indexOf("/", 8)), url, boxHelper.configures.get("path").toString(), type, Double.parseDouble(boxHelper.configures.get("min").toString()), Double.parseDouble(boxHelper.configures.get("max").toString()), boxHelper.driver));
-        }
-        while (true){
-            if (limit != -1 && limit != 0) {
-                if (!boxHelper.canContinue(maxDisk, limit)){
-                    System.out.println("Reached limit, exit.");
-                    System.exit(111);
-                } else {
-                    System.out.println("Under limit, continue.");
-                }
-            }
-            ExecutorService executorService = Executors.newFixedThreadPool(cpuThreads);
-            System.out.println("\nBoxHelper " + count + " begins at " + time());
 
-            for (Spider spider: spiders) {
-                executorService.execute(spider);
+        ArrayList<Pt> pts = new ArrayList<>();
+        Map<String, String> urlSizeSpeedCli = (Map<String, String>) boxHelper.configures.get("url_size_speed_cli");
+
+        boxHelper.drivers.forEach((url, driver) -> {
+            String ussc = urlSizeSpeedCli.get(url.toString());
+            Object[] a = (Object[]) boxHelper.configures.get(ussc.substring(0,2) + "Config");
+            String[] config = new String[]{a[0].toString(), a[1].toString(), a[2].toString()};
+            pts.add(PTChecker.dispatch(url.toString(), ussc.substring(3, ussc.lastIndexOf("/")), (HtmlUnitDriver)driver, ussc.substring(0,2), config, ussc.substring(ussc.lastIndexOf("/") + 1).equals("true")));
+        });
+
+        while (true){
+            ExecutorService executorService = Executors.newFixedThreadPool(cpuThreads);
+            System.out.println("\nBoxHelper " + count + " runs at " + time());
+            if (boxHelper.configures.containsKey("deConfig")){
+                System.out.println("Checking DE status...");
+                Object[] de = (Object[]) boxHelper.configures.get("deConfig");
+                String[] deConfig = new String[]{de[0].toString(), de[1].toString(), de[2].toString(), de[3].toString(), de[4].toString()};
+                executorService.submit(new DEChecker(deConfig[0], deConfig[1], new Long(deConfig[2]).longValue() * 1073741824, deConfig[3], Integer.parseInt(deConfig[4])));
             }
+            if (boxHelper.configures.containsKey("qbConfig")){
+                System.out.println("Checking QB status...");
+                Object[] qb = (Object[]) boxHelper.configures.get("qbConfig");
+                String[] qbConfig = new String[]{qb[0].toString(), qb[1].toString(), qb[2].toString(), qb[3].toString(), qb[4].toString()};
+                executorService.submit(new QBChecker(qbConfig[0], qbConfig[1], new Long(qbConfig[2]).longValue() * 1073741824, qbConfig[3], Integer.parseInt(qbConfig[4])));
+            }
+            if (boxHelper.configures.containsKey("trConfig")){
+
+            }
+            if (boxHelper.configures.containsKey("rtConfig")){
+
+            }
+            pts.forEach(pt -> {
+                if (pt instanceof NexusPHP) executorService.submit((NexusPHP)pt);
+            });
             executorService.shutdown();
             try {
-                sleep((long) (1000*60*Double.valueOf(boxHelper.configures.get("cycle").toString())));
+                sleep((long) (1000*Double.valueOf(boxHelper.configures.get("cycle").toString())));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
