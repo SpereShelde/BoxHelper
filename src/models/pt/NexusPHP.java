@@ -122,8 +122,11 @@ public class NexusPHP extends Pt implements Runnable {
                         size *= 1024;
                     }
                 }
-                if (this.urls.size() == 0 && !this.load) this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
-                if (!this.urls.contains("https://totheglory.im/dl/" + id + "/" + this.passkey)) {
+                if (this.urls.size() == 0 && !this.load) {
+                    System.out.println("Skip " + "https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey + "...");
+                    this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
+                }
+                else if (!this.urls.contains("https://totheglory.im/dl/" + id + "/" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
                         System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
                         this.urls.add("https://totheglory.im/dl/" + id + "/" + this.passkey);
@@ -142,6 +145,7 @@ public class NexusPHP extends Pt implements Runnable {
                 this.urls.addAll(this.newUrls);
                 this.newUrls = new ArrayList<String>();
             }
+
         } else {
             driver.get(url);
             String s = driver.getPageSource();
@@ -192,8 +196,11 @@ public class NexusPHP extends Pt implements Runnable {
                         size *= 1024;
                     }
                 }
-                if (this.urls.size() == 0 && !this.load) this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
-                if (!this.urls.contains("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey)) {
+                if (this.urls.size() == 0 && !this.load){
+                    System.out.println("Skip " + "https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey + "...");
+                    this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
+                }
+                else if (!this.urls.contains("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
                         System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
                         this.urls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
