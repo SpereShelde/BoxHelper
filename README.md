@@ -2,7 +2,11 @@
 
 ## Usage
 
+`screen -R BoxHelper`
+
 `wget --no-check-certificate -qO BoxHelper.sh https://raw.githubusercontent.com/SpereShelde/Scripts/master/BoxHelper.sh && bash BoxHelper.sh`
+
+`Ctrl + a + d` 退出 screen
 
 ---
 
