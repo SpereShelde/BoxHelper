@@ -4,7 +4,7 @@
 
 `screen -R boxHelper`
 
-`wget --no-check-certificate -qO boxHelper.sh https://github.com/SpereShelde/Scripts/blob/master/boxHelper.sh`
+`wget --no-check-certificate -qO boxHelper.sh https://raw.githubusercontent.com/SpereShelde/Scripts/master/boxHelper.sh`
 
 `bash boxHelper.sh`
 
