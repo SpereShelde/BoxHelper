@@ -12,6 +12,10 @@
 
 ---
 
+如果提示 `java command not found` 请输入 `source ~/.bashrc`
+
+---
+
 ## Watch this！ 
 
 - BoxHelper 需要你提供Cookie，并会获取你的passkey，但是 BoxHelper 不会上传他们
