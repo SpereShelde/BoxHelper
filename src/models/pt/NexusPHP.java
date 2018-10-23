@@ -48,13 +48,13 @@ public class NexusPHP extends Pt implements Runnable {
             return true;
         } else return false;
     }
-
     private void getPasskey() {
         String source;
         Pattern passkeylink;
         if (url.contains("totheglory.im")){
             driver.get("https://totheglory.im/my.php");
-            passkey = driver.findElementByXPath("//*[@id=\"main_table\"]/tbody/tr[1]/td/table[2]/tbody/tr[2]/td/form/table/tbody/tr[6]/td[2]").getText();
+            String[] s = driver.getPageSource().split("nowrap>Passkey</td><td valign=\"top\" align=left>");
+            passkey = s[1].substring(0, 32);
         } else {
             driver.get(url);
             source = driver.getPageSource();
