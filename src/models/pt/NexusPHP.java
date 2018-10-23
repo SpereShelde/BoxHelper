@@ -53,8 +53,9 @@ public class NexusPHP extends Pt implements Runnable {
         Pattern passkeylink;
         if (url.contains("totheglory.im")){
             driver.get("https://totheglory.im/my.php");
-            String[] s = driver.getPageSource().split("nowrap>Passkey</td><td valign=\"top\" align=left>");
-            passkey = s[1].substring(0, 32);
+            String[] s = driver.getPageSource().split("Passkey");
+            String[] t = s[1].split("\n");
+            passkey = t[3].trim();
         } else {
             driver.get(url);
             source = driver.getPageSource();
