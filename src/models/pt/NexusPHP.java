@@ -54,7 +54,7 @@ public class NexusPHP extends Pt implements Runnable {
         Pattern passkeylink;
         if (url.contains("totheglory.im")){
             driver.get("https://totheglory.im/my.php");
-            passkey = driver.findElementByCssSelector("#main_table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td > form > table > tbody > tr:nth-child(7) > td:nth-child(2)").getText();
+            passkey = driver.findElementByXPath("//*[@id=\"main_table\"]/tbody/tr[1]/td/table[2]/tbody/tr[2]/td/form/table/tbody/tr[6]/td[2]").getText();
         } else {
             driver.get(url);
             source = driver.getPageSource();
