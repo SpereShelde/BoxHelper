@@ -101,13 +101,19 @@ public class BoxHelper {
                 System.out.println("Checking DE status...");
                 Object[] de = (Object[]) boxHelper.configures.get("deConfig");
                 String[] deConfig = new String[]{de[0].toString(), de[1].toString(), de[2].toString(), de[3].toString(), de[4].toString()};
-                executorService.submit(new DEChecker(deConfig[0], deConfig[1], new Long(deConfig[2]).longValue() * 1073741824, deConfig[3], Integer.parseInt(deConfig[4])));
+                Long space;
+                if ("-1".equals(deConfig[2])) space = new Long("102400") * 1073741824;
+                else space = new Long(deConfig[2]) * 1073741824;
+                executorService.submit(new DEChecker(deConfig[0], deConfig[1], space, deConfig[3], Integer.parseInt(deConfig[4])));
             }
             if (boxHelper.configures.containsKey("qbConfig")){
                 System.out.println("Checking QB status...");
                 Object[] qb = (Object[]) boxHelper.configures.get("qbConfig");
                 String[] qbConfig = new String[]{qb[0].toString(), qb[1].toString(), qb[2].toString(), qb[3].toString(), qb[4].toString()};
-                executorService.submit(new QBChecker(qbConfig[0], qbConfig[1], new Long(qbConfig[2]).longValue() * 1073741824, qbConfig[3], Integer.parseInt(qbConfig[4])));
+                Long space;
+                if ("-1".equals(qbConfig[2])) space = new Long("102400") * 1073741824;
+                else space = new Long(qbConfig[2]) * 1073741824;
+                executorService.submit(new QBChecker(qbConfig[0], qbConfig[1], space, qbConfig[3], Integer.parseInt(qbConfig[4])));
             }
             if (boxHelper.configures.containsKey("trConfig")){
 

@@ -34,7 +34,8 @@ public class DEChecker implements Runnable{
         //1073741824
         ArrayList<DETorrent> torrents = null;
         try {
-            torrents = HttpHelper.getTorrentsFromDE(webUI + "/json", "BoxHelper", passwd, "127.0.0.1", "\"name\",\"total_wanted\",\"upload_payload_rate\",\"ratio\",\"time_added\"");
+            String sid = HttpHelper.loginToDE(webUI + "/json", "BoxHelper", this.passwd, "127.0.0.1");
+            torrents = HttpHelper.getTorrentsFromDE(webUI + "/json", "BoxHelper", sid, "127.0.0.1", "\"name\",\"total_wanted\",\"upload_payload_rate\",\"ratio\",\"time_added\"");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,15 +96,16 @@ public class DEChecker implements Runnable{
             currentSize += torrent.getTotal_wanted();//B
         });
         if (currentSize <= space){
-            System.out.println("DE: used space is " + new DecimalFormat("#0.00").format(currentSize / (double)1073741824) + " GB, under space limit.");
+            System.out.println("DE: used space is " + new DecimalFormat("#0.00").format(currentSize / (double)1073741824) + " GB, under space limit (" + new DecimalFormat("#0.00").format(space / (double)1073741824) + " GB).");
         }else {
-            System.out.println("DE: used space is " + new DecimalFormat("#0.00").format(currentSize / (double)1073741824) + " GB, beyond space limit.\nBegin delete DE torrents...");
+            System.out.println("DE: used space is " + new DecimalFormat("#0.00").format(currentSize / (double)1073741824) + " GB, beyond space limit (" + new DecimalFormat("#0.00").format(space / (double)1073741824) + " GB).\nBegin delete DE torrents...");
             List<DETorrent> torrentsToBeRemoved = new ArrayList<>();
             torrentsToBeRemoved = torrents.subList(0, this.num);
             Map<String, String> contents = new HashMap();
             torrentsToBeRemoved.forEach(torrent -> {
                 try {
-                    if (HttpHelper.removeTorrentFromDE(webUI + "/json", "BoxHelper", passwd, "127.0.0.1", torrent.getHash()))
+                    String sid = HttpHelper.loginToDE(webUI + "/json", "BoxHelper", this.passwd, "127.0.0.1");
+                    if (HttpHelper.removeTorrentFromDE(webUI + "/json", "BoxHelper", sid, "127.0.0.1", torrent.getHash()))
                         System.out.println("DE: successfully deleted torrents.");
                 } catch (IOException e) {
                     e.printStackTrace();

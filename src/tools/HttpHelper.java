@@ -132,9 +132,9 @@ public class HttpHelper {
         return entity != null && response.getStatusLine().toString().contains("200");//Not precise
     }
 
-    public static HttpPost loginToDE(String destination, String userAgent, String host, String paswd){
+    public static String loginToDE(String destination, String userAgent, String passwd, String host){
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        String login = "{\"method\":\"auth.login\",\"params\":[\"" + paswd + "\"],\"id\":1}";
+        String login = "{\"method\":\"auth.login\",\"params\":[\"" + passwd + "\"],\"id\":1}";
         HttpPost httpPost = new HttpPost(destination);
         //创建参数队列
         httpPost.addHeader("User-Agent", userAgent);
@@ -152,15 +152,16 @@ public class HttpHelper {
         }
         String setCookie = response.getFirstHeader("Set-Cookie").getValue();
         String sessionId = setCookie.substring("_session_id=".length(), setCookie.indexOf(";"));
-        httpPost.addHeader("Cookie", "_session_id=" + sessionId);
-//        Header[] headers = httpPost.getAllHeaders();
-//        for (int i = 0; i < headers.length; i++) System.out.println(headers[i].toString());
-        return httpPost;
+        return sessionId;
     }
 
-    public static ArrayList<DETorrent> getTorrentsFromDE(String destination, String userAgent, String paswd, String host, String params) throws IOException {
+    public static ArrayList<DETorrent> getTorrentsFromDE(String destination, String userAgent, String sid, String host, String params) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = loginToDE(destination, userAgent, host, paswd);
+        HttpPost httpPost = new HttpPost(destination);
+        httpPost.addHeader("User-Agent", userAgent);
+        httpPost.addHeader("Host", host);
+        httpPost.addHeader("Content-Type", "application/json");
+        httpPost.addHeader("Cookie", "_session_id=" + sid);
         String get = "{\"method\":\"web.update_ui\",\"params\":[[" + params + "],{}],\"id\":123}";
         StringEntity stringEntity = new StringEntity(get, ContentType.APPLICATION_JSON);
         httpPost.setEntity(stringEntity);
@@ -172,15 +173,19 @@ public class HttpHelper {
             entity = response.getEntity();
             res = EntityUtils.toString(entity, "UTF-8");
             return ConvertJson.convertDETorrents(res);
-        } finally {
-            response.close();
-            httpClient.close();
+
+        } catch (Exception e) {
         }
+        return ConvertJson.convertDETorrents(res);
     }
 
-    public static void addTorrentsToDE(String destination, String userAgent, String paswd, String host, ArrayList<String> urls, double download, double upload) throws IOException {
+    public static void addTorrentsToDE(String destination, String userAgent, String sid, String host, ArrayList<String> urls, double download, double upload) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = loginToDE(destination, userAgent, host, paswd);
+        HttpPost httpPost = new HttpPost(destination);
+        httpPost.addHeader("User-Agent", userAgent);
+        httpPost.addHeader("Host", host);
+        httpPost.addHeader("Content-Type", "application/json");
+        httpPost.addHeader("Cookie", "_session_id=" + sid);
         CloseableHttpResponse response = null;
         try {
             urls.forEach(url -> {
@@ -201,22 +206,29 @@ public class HttpHelper {
                         HttpEntity entity2 = response2.getEntity();
                         String res2 = EntityUtils.toString(entity2, "UTF-8");
                         Map resMap2 = ConvertJson.convertResponse(res2);
-                        if (resMap2.get("error").equals("null")) System.out.println("DE: successfully add torrent " + url);
+                        if (resMap2.get("error").equals("null")) {
+                            System.out.println("DE: successfully add torrent " + url);
+
+                        }
                         else System.out.println("DE: cannot add torrent");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
-        } finally {
             response.close();
             httpClient.close();
+        } catch (Exception e) {
         }
     }
 
-    public static boolean removeTorrentFromDE(String destination, String userAgent, String paswd, String host, String hash) throws IOException {
+    public static boolean removeTorrentFromDE(String destination, String userAgent, String sid, String host, String hash) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = loginToDE(destination, userAgent, host, paswd);
+        HttpPost httpPost = new HttpPost(destination);
+        httpPost.addHeader("User-Agent", userAgent);
+        httpPost.addHeader("Host", host);
+        httpPost.addHeader("Content-Type", "application/json");
+        httpPost.addHeader("Cookie", "_session_id=" + sid);
         String get = "{\"method\":\"core.remove_torrent\",\"params\":[\"" + hash + "\",true],\"id\":1}";
         StringEntity stringEntity = new StringEntity(get, ContentType.APPLICATION_JSON);
         httpPost.setEntity(stringEntity);

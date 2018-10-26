@@ -62,9 +62,9 @@ public class QBChecker implements Runnable {
             currentSize += QBTorrent.getSize();
         });
         if (currentSize <= space){
-            System.out.println("QB: space used is " + new DecimalFormat("#0.00").format(currentSize / (double)1073741824) + " GB, under space limit.");
+            System.out.println("QB: space used is " + new DecimalFormat("#0.00").format(currentSize / (double)1073741824) + " GB, under space limit (" + new DecimalFormat("#0.00").format(space / (double)1073741824) + " GB).");
         }else {
-            System.out.println("QB: space used is " + new DecimalFormat("#0.00").format(currentSize / (double)1073741824) + " GB, beyond space limit.\nBegin delete QB torrents...");
+            System.out.println("QB: space used is " + new DecimalFormat("#0.00").format(currentSize / (double)1073741824) + " GB, beyond space limit (" + new DecimalFormat("#0.00").format(space / (double)1073741824) + " GB).\nBegin delete QB torrents...");
             List<QBTorrent> torrentsToBeRemoved;
             switch (this.action){
                 default:

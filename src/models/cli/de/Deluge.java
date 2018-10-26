@@ -32,7 +32,8 @@ public class Deluge {
     }
     public void addTorrents(){
         try {
-            HttpHelper.addTorrentsToDE(webUI + "/json", "BoxHelper", this.paswd, "127.0.0.1", this.urls, download, upload); //Login DE
+            String sid = HttpHelper.loginToDE(webUI + "/json", "BoxHelper", this.paswd, "127.0.0.1");
+            HttpHelper.addTorrentsToDE(webUI + "/json", "BoxHelper", sid, "127.0.0.1", this.urls, download, upload); //Login DE
         } catch (IOException e) {
             e.printStackTrace();
         }

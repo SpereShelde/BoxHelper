@@ -98,9 +98,9 @@ public class NexusPHP extends Pt implements Runnable {
                 subString = dateMatcher.group();
                 Pattern idPattern = Pattern.compile("torrent=\"[0-9]*");
                 Matcher idMatcher = idPattern.matcher(subString);
-                if  (idMatcher.find()){
-                    id  = idMatcher.group().substring(9);
-                    if ("".equals(id)){
+                if (idMatcher.find()) {
+                    id = idMatcher.group().substring(9);
+                    if ("".equals(id)) {
                         System.out.println("Cannot find torrent id.");
                         System.exit(106);
                     }
@@ -109,27 +109,26 @@ public class NexusPHP extends Pt implements Runnable {
                 Pattern sizeAndUnitPattern = Pattern.compile("align=\"center\">.*<br>[TGM]B");
                 String s1 = searchString.substring(searchString.indexOf(id));
                 Matcher sizeAndUnitMatcher = sizeAndUnitPattern.matcher(s1);
-                if  (sizeAndUnitMatcher.find()){
+                if (sizeAndUnitMatcher.find()) {
                     String sizeAndUnitString = sizeAndUnitMatcher.group();
                     Pattern sizePattern = Pattern.compile("[1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|[1-9]\\d*");
                     Matcher sizeMatcher = sizePattern.matcher(sizeAndUnitString);
-                    if  (sizeMatcher.find()) {
+                    if (sizeMatcher.find()) {
                         size = Double.valueOf(sizeMatcher.group());
                     }
-                    if ("MB".equals(sizeAndUnitString.substring(sizeAndUnitString.length() - 2))){
+                    if ("MB".equals(sizeAndUnitString.substring(sizeAndUnitString.length() - 2))) {
                         size /= 1024;
                     }
-                    if ("TB".equals(sizeAndUnitString.substring(sizeAndUnitString.length() - 2))){
+                    if ("TB".equals(sizeAndUnitString.substring(sizeAndUnitString.length() - 2))) {
                         size *= 1024;
                     }
                 }
                 if (this.urls.size() == 0 && !this.load) {
-                    System.out.println("Skip " + "https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey + "...");
-                    this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
-                }
-                else if (!this.urls.contains("https://totheglory.im/dl/" + id + "/" + this.passkey)) {
+                    System.out.println("Skip " + "https://" + domain + "/dl/" + id + "...");
+                    this.newUrls.add("https://" + domain + "/dl/" + id + "/" + this.passkey);
+                } else if (!this.urls.contains("https://totheglory.im/dl/" + id + "/" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
-                        System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
+                        System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size) + " GB");
                         this.urls.add("https://totheglory.im/dl/" + id + "/" + this.passkey);
                         this.newUrls.add("https://totheglory.im/dl/" + id + "/" + this.passkey);
                     }
@@ -142,11 +141,6 @@ public class NexusPHP extends Pt implements Runnable {
                 searchString = originalString.substring(beEndIndex);
                 dateMatcher = datePattern.matcher(searchString);
             }
-            if (this.urls.size() == 0 && !this.load) {
-                this.urls.addAll(this.newUrls);
-                this.newUrls = new ArrayList<String>();
-            }
-
         } else {
             driver.get(url);
             String s = driver.getPageSource();
@@ -198,10 +192,9 @@ public class NexusPHP extends Pt implements Runnable {
                     }
                 }
                 if (this.urls.size() == 0 && !this.load){
-                    System.out.println("Skip " + "https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey + "...");
+                    System.out.println("Skip " + "https://" + domain + "/download.php?id=" + id + "...");
                     this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
-                }
-                else if (!this.urls.contains("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey)) {
+                } else if (!this.urls.contains("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
                         System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
                         this.urls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
@@ -216,10 +209,10 @@ public class NexusPHP extends Pt implements Runnable {
                 searchString = originalString.substring(beEndIndex);
                 dateMatcher = datePattern.matcher(searchString);
             }
-            if (this.urls.size() == 0 && !this.load) {
-                this.urls.addAll(this.newUrls);
-                this.newUrls = new ArrayList<String>();
-            }
+        }
+        if (this.urls.size() == 0 && !this.load) {
+            this.urls.addAll(this.newUrls);
+            this.newUrls = new ArrayList<String>();
         }
     }
 
@@ -241,7 +234,6 @@ public class NexusPHP extends Pt implements Runnable {
             case "tr":
             case "rt":
         }
-
         this.newUrls = new ArrayList<String>();
     }
 }
