@@ -199,7 +199,7 @@ public class HttpHelper {
                     String res1 = EntityUtils.toString(entity1, "UTF-8");
                     Map resMap1 = ConvertJson.convertResponse(res1);
                     if (resMap1.get("error").equals("null")) {
-                        String add = "{\"method\":\"web.add_torrents\",\"params\":[[{\"path\":\"" + resMap1.get("result") + "\",\"options\":{\"max_download_speed\":" + download + ",\"max_upload_speed\":" + upload + "}}]],\"id\":1}";
+                        String add = "{\"method\":\"web.add_torrents\",\"params\":[[{\"path\":\"" + resMap1.get("result") + "\",\"options\":{\"max_download_speed\":" + download * 1024 + ",\"max_upload_speed\":" + upload * 1024 + "}}]],\"id\":1}";
                         StringEntity stringEntity2 = new StringEntity(add, ContentType.APPLICATION_JSON);
                         httpPost.setEntity(stringEntity2);
                         CloseableHttpResponse response2 = httpClient.execute(httpPost);
