@@ -5,17 +5,26 @@ package models.torrent.deTorrent;
  */
 public class DETorrent{
 
-    private String name, hash;
+    private String name, hash, state;
     private long total_wanted, time_added, upload_payload_rate;
     private double ratio;
 
-    public DETorrent(String name, String hash, long total_wanted, long time_added, long upload_payload_rate, double ratio) {
+    public DETorrent(String name, String hash, String state, long total_wanted, long time_added, long upload_payload_rate, double ratio) {
+        this.state = state;
         this.name = name;
         this.hash = hash;
         this.total_wanted = total_wanted;
         this.time_added = time_added;
         this.upload_payload_rate = upload_payload_rate;
         this.ratio = ratio;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getName() {

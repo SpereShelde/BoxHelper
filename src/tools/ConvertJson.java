@@ -87,6 +87,7 @@ public class ConvertJson {
             }
         }
         configures.put("url_size_speed_cli", urlSizeSpeedCli);
+        configures.put("downloading_amount", object.get("total_downloading_amount").getAsInt());
         configures.put("cycle", object.get("cycle").getAsInt());
         return configures;
     }
@@ -159,7 +160,7 @@ public class ConvertJson {
     public static ArrayList<QBTorrent> convertQBTorrents(String content){
         ArrayList<QBTorrent> QBTorrents = new ArrayList<>();
         JsonParser jsonParser = new JsonParser();
-        String name, hash;
+        String name, hash, state;
         long added_on, completion_on, last_activity, size;
         int dl_limit, up_limit, num_incomplete;
         double ratio;
@@ -177,7 +178,8 @@ public class ConvertJson {
             ratio = object.get("ratio").getAsDouble();
             size = object.get("size").getAsLong();
             up_limit = object.get("up_limit").getAsInt();
-            QBTorrents.add(new QBTorrent(name, hash, added_on, completion_on, last_activity, size, dl_limit, up_limit, num_incomplete, ratio));
+            state = object.get("state").getAsString();
+            QBTorrents.add(new QBTorrent(name, hash, state, added_on, completion_on, last_activity, size, dl_limit, up_limit, num_incomplete, ratio));
         }
         return QBTorrents;
     }
@@ -190,7 +192,7 @@ public class ConvertJson {
         Map<String, Torrents> torrents = response.getResult().getTorrents(); //对动态的key，来创建map，间接从中取出实体类futrue。
         ArrayList<DETorrent> deTorrents = new ArrayList<>();
         for (Map.Entry<String, Torrents> pair:torrents.entrySet()){//遍历取出键值对，调用getkey()，getvalue()取出key和value。
-            DETorrent deTorrent = new DETorrent(pair.getValue().getName(), pair.getKey(), pair.getValue().getTotal_wanted(), pair.getValue().getTime_added(), pair.getValue().getUpload_payload_rate(), pair.getValue().getRatio());
+            DETorrent deTorrent = new DETorrent(pair.getValue().getName(), pair.getKey(), pair.getValue().getState(), pair.getValue().getTotal_wanted(), pair.getValue().getTime_added(), pair.getValue().getUpload_payload_rate(), pair.getValue().getRatio());
             deTorrents.add(deTorrent);
         }
         return deTorrents;

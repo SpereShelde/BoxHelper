@@ -20,6 +20,15 @@ public class DEChecker implements Runnable{
     private long space;
     private String action;
     private int num = 0;
+    private int downloadingAmount = 0;
+
+    public int getDownloadingAmount() {
+        return downloadingAmount;
+    }
+
+    public void setDownloadingAmount(int downloadingAmount) {
+        this.downloadingAmount = downloadingAmount;
+    }
 
     public DEChecker(String webUI, String passwd, long space, String action, int num) {
         this.passwd = passwd;
@@ -29,13 +38,17 @@ public class DEChecker implements Runnable{
         this.num = num;
     }
 
+    public DEChecker() {
+        downloadingAmount = 0;
+    }
+
     @Override
     public void run() {
         //1073741824
         ArrayList<DETorrent> torrents = null;
         try {
             String sid = HttpHelper.loginToDE(webUI + "/json", "BoxHelper", this.passwd, "127.0.0.1");
-            torrents = HttpHelper.getTorrentsFromDE(webUI + "/json", "BoxHelper", sid, "127.0.0.1", "\"name\",\"total_wanted\",\"upload_payload_rate\",\"ratio\",\"time_added\"");
+            torrents = HttpHelper.getTorrentsFromDE(webUI + "/json", "BoxHelper", sid, "127.0.0.1", "\"name\",\"state\",\"total_wanted\",\"upload_payload_rate\",\"ratio\",\"time_added\"");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,6 +107,9 @@ public class DEChecker implements Runnable{
         }
         torrents.forEach(torrent -> {
             currentSize += torrent.getTotal_wanted();//B
+            if ("Downloading".equals(torrent.getState())){
+                downloadingAmount += 1;
+            }
         });
         if (currentSize <= space){
             System.out.println("DE: used space is " + new DecimalFormat("#0.00").format(currentSize / (double)1073741824) + " GB, under space limit (" + new DecimalFormat("#0.00").format(space / (double)1073741824) + " GB).");

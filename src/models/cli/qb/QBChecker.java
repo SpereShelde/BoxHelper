@@ -23,6 +23,19 @@ public class QBChecker implements Runnable {
     private long space;
     private String action;
     private int num = 0;
+    private int downloadingAmount = 0;
+
+    public int getDownloadingAmount() {
+        return downloadingAmount;
+    }
+
+    public void setDownloadingAmount(int downloadingAmount) {
+        this.downloadingAmount = downloadingAmount;
+    }
+
+    public QBChecker() {
+        downloadingAmount = 0;
+    }
 
     public QBChecker(String webUI, String unpd, long space, String action, int num) {
         this.webUI = webUI;
@@ -54,12 +67,15 @@ public class QBChecker implements Runnable {
                 case "large": act = "size"; break;
                 case "ratio": act = "ratio"; break;
             }
-            QBTorrents = ConvertJson.convertQBTorrents(HttpHelper.doGetToQBWithAuth(webUI + "/query/torrents?filter=completed&category=BoxHelper&sort=" + act, sid, "BoxHelper", "127.0.0.1"));
+            QBTorrents = ConvertJson.convertQBTorrents(HttpHelper.doGetToQBWithAuth(webUI + "/query/torrents?filter=all&category=BoxHelper&sort=" + act, sid, "BoxHelper", "127.0.0.1"));
         } catch (IOException e) {
             e.printStackTrace();
         }
         QBTorrents.forEach(QBTorrent -> {
             currentSize += QBTorrent.getSize();
+            if ("downloading".equals(QBTorrent.getState())){
+                downloadingAmount += 1;
+            }
         });
         if (currentSize <= space){
             System.out.println("QB: space used is " + new DecimalFormat("#0.00").format(currentSize / (double)1073741824) + " GB, under space limit (" + new DecimalFormat("#0.00").format(space / (double)1073741824) + " GB).");

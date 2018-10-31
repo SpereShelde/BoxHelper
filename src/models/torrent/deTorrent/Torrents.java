@@ -9,7 +9,15 @@ public class Torrents {
     private Long time_added;
     private Long upload_payload_rate;
     private Double ratio;
-    private String name;
+    private String name, state;
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 
     public Long getTotal_wanted() {
         return total_wanted;

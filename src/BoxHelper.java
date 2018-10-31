@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
+import static java.lang.Thread.interrupted;
 import static java.lang.Thread.sleep;
 
 /**
@@ -97,6 +98,8 @@ public class BoxHelper {
         while (true){
             ExecutorService executorService = Executors.newFixedThreadPool(cpuThreads);
             System.out.println("\nBoxHelper " + count + " runs at " + time());
+            QBChecker qbChecker = new QBChecker();
+            DEChecker deChecker = new DEChecker();
             if (boxHelper.configures.containsKey("deConfig")){
                 System.out.println("Checking DE status...");
                 Object[] de = (Object[]) boxHelper.configures.get("deConfig");
@@ -104,7 +107,8 @@ public class BoxHelper {
                 Long space;
                 if ("-1".equals(deConfig[2])) space = new Long("102400") * 1073741824;
                 else space = new Long(deConfig[2]) * 1073741824;
-                executorService.submit(new DEChecker(deConfig[0], deConfig[1], space, deConfig[3], Integer.parseInt(deConfig[4])));
+                deChecker = new DEChecker(deConfig[0], deConfig[1], space, deConfig[3], Integer.parseInt(deConfig[4]));
+                deChecker.run();
             }
             if (boxHelper.configures.containsKey("qbConfig")){
                 System.out.println("Checking QB status...");
@@ -113,18 +117,24 @@ public class BoxHelper {
                 Long space;
                 if ("-1".equals(qbConfig[2])) space = new Long("102400") * 1073741824;
                 else space = new Long(qbConfig[2]) * 1073741824;
-                executorService.submit(new QBChecker(qbConfig[0], qbConfig[1], space, qbConfig[3], Integer.parseInt(qbConfig[4])));
+                qbChecker = new QBChecker(qbConfig[0], qbConfig[1], space, qbConfig[3], Integer.parseInt(qbConfig[4]));
+                qbChecker.run();
             }
+
             if (boxHelper.configures.containsKey("trConfig")){
 
             }
             if (boxHelper.configures.containsKey("rtConfig")){
 
             }
-            pts.forEach(pt -> {
-                if (pt instanceof NexusPHP) executorService.submit((NexusPHP)pt);
-            });
+            if (qbChecker.getDownloadingAmount() + deChecker.getDownloadingAmount() <= (int)boxHelper.configures.get("downloading_amount")) {
+                pts.forEach(pt -> {
+                    if (pt instanceof NexusPHP) executorService.submit((NexusPHP) pt);
+                });
+            } else System.out.println("Total amount of downloading torrents over limit, stop adding torrents...");
             executorService.shutdown();
+            deChecker.setDownloadingAmount(0);
+            qbChecker.setDownloadingAmount(0);
             try {
                 sleep((long) (1000*Double.valueOf(boxHelper.configures.get("cycle").toString())));
             } catch (InterruptedException e) {

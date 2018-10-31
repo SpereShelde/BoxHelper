@@ -1,8 +1,9 @@
 {
-  "de_config":["deWebUI", "dePasswd", 51200, "small", 1],
-  "qb_config":["qbWebUI", "qbSID", 51200, "large", 2],
+  "de_config":["http://your.box.url:8112/", "passwd", -1, "slow", 1],
+  "qb_config":["http://your.box.url:2017/", "username-passwd", -1, "slow", 1],
+  "total_downloading_amount":5,
   "url_size_speed_cli":[
-    ["https://tp.m-team.cc/movie.php", 20, -1, "de", -1, 12, false]
+    ["https://tp.m-team.cc/adult.php", -1, -1, "qb", -1, 12, true]
   ],
   "cycle":20
 }
