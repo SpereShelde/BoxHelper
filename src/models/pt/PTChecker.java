@@ -14,7 +14,7 @@ public class PTChecker {
         String[] ss =sizeSpeed.split("/");
         Pt pt = new Pt();
         if (NexusPHP.isNexusPHP(url)) {
-            pt = new NexusPHP(url, cli, Double.parseDouble(ss[0]), Double.parseDouble(ss[1]), Double.parseDouble(ss[2]), Double.parseDouble(ss[3]), (HtmlUnitDriver) driver, config, load);
+            pt = new NexusPHP(url, cli, Double.parseDouble(ss[0]), Double.parseDouble(ss[1]), Double.parseDouble(ss[2]), Double.parseDouble(ss[3]), (HtmlUnitDriver) driver, config, load, true);
         }// Check the type
         return pt;
     }

@@ -207,8 +207,7 @@ public class HttpHelper {
                         String res2 = EntityUtils.toString(entity2, "UTF-8");
                         Map resMap2 = ConvertJson.convertResponse(res2);
                         if (resMap2.get("error").equals("null")) {
-                            System.out.println("DE: successfully add torrent " + url);
-
+                            System.out.println("DE: successfully add torrent " + url.substring(0, url.length() - 41));
                         }
                         else System.out.println("DE: cannot add torrent");
                     }

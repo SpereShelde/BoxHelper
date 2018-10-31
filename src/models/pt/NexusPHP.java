@@ -25,8 +25,9 @@ public class NexusPHP extends Pt implements Runnable {
     private HtmlUnitDriver driver;
     private String[] cliConfig;
     private boolean load;
+    private boolean download;
 
-    public NexusPHP(String url, String cli, double min, double max, double down, double up, HtmlUnitDriver driver, String[] cliConfig, boolean load) {
+    public NexusPHP(String url, String cli, double min, double max, double down, double up, HtmlUnitDriver driver, String[] cliConfig, boolean load, boolean download) {
         this.url = url;
         this.cli = cli;
         this.domain = url.substring(url.indexOf("//") + 2, url.indexOf("/", url.indexOf("//") + 2));
@@ -38,6 +39,11 @@ public class NexusPHP extends Pt implements Runnable {
         this.cliConfig = cliConfig;
         this.getPasskey();
         this.load = load;
+        this.download = download;
+    }
+
+    public void setDownload(boolean download) {
+        this.download = download;
     }
 
     public static boolean isNexusPHP(String url){
@@ -128,7 +134,7 @@ public class NexusPHP extends Pt implements Runnable {
                     this.newUrls.add("https://" + domain + "/dl/" + id + "/" + this.passkey);
                 } else if (!this.urls.contains("https://totheglory.im/dl/" + id + "/" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
-                        System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size) + " GB");
+                        if (this.download) System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size) + " GB");
                         this.urls.add("https://totheglory.im/dl/" + id + "/" + this.passkey);
                         this.newUrls.add("https://totheglory.im/dl/" + id + "/" + this.passkey);
                     }
@@ -196,7 +202,7 @@ public class NexusPHP extends Pt implements Runnable {
                     this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
                 } else if (!this.urls.contains("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
-                        System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
+                        if (this.download) System.out.println(this.cli.toUpperCase() + ": got torrent from " + url + ", id: " + id + ", size: " + new DecimalFormat("#0.00").format(size)  + " GB");
                         this.urls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
                         this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
                     }
@@ -219,21 +225,23 @@ public class NexusPHP extends Pt implements Runnable {
     @Override
     public void run() {
         this.getFreeIDs();
-        switch (this.cli.toLowerCase()){
-            default:
-            case "de":
-                Deluge deluge = new Deluge(this.cliConfig[0], this.cliConfig[1], url, this.urls, this.down, this.up);
-                deluge.setUrls(this.newUrls);
-                deluge.addTorrents();
-                break;
-            case "qb":
-                QBittorrent qBittorrent = new QBittorrent(this.cliConfig[0], this.cliConfig[1], url, this.urls, this.down, this.up);
-                qBittorrent.setUrls(this.newUrls);
-                qBittorrent.addTorrents();
-                break;
-            case "tr":
-            case "rt":
+        if (this.download) {
+            switch (this.cli.toLowerCase()) {
+                default:
+                case "de":
+                    Deluge deluge = new Deluge(this.cliConfig[0], this.cliConfig[1], url, this.urls, this.down, this.up);
+                    deluge.setUrls(this.newUrls);
+                    deluge.addTorrents();
+                    break;
+                case "qb":
+                    QBittorrent qBittorrent = new QBittorrent(this.cliConfig[0], this.cliConfig[1], url, this.urls, this.down, this.up);
+                    qBittorrent.setUrls(this.newUrls);
+                    qBittorrent.addTorrents();
+                    break;
+                case "tr":
+                case "rt":
+            }
+            this.newUrls = new ArrayList<String>();
         }
-        this.newUrls = new ArrayList<String>();
     }
 }
