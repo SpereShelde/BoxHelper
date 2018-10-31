@@ -127,7 +127,8 @@ public class BoxHelper {
             if (boxHelper.configures.containsKey("rtConfig")){
 
             }
-            if (qbChecker.getDownloadingAmount() + deChecker.getDownloadingAmount() > (int)boxHelper.configures.get("downloading_amount")) {
+            int amount = (int)boxHelper.configures.get("downloading_amount");
+            if (qbChecker.getDownloadingAmount() + deChecker.getDownloadingAmount() >= (amount<0?65500:amount)) {
                 System.out.println("Total amount of downloading torrents over limit, stop adding torrents...");
                 pts.forEach(pt -> {
                     if (pt instanceof NexusPHP) ((NexusPHP) pt).setDownload(false);

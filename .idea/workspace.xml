@@ -9,9 +9,6 @@
     <list default="true" id="125ace7c-ae70-4656-8ce2-f4caafb2a5a3" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.json" afterPath="$PROJECT_DIR$/config.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BoxHelper.java" afterPath="$PROJECT_DIR$/src/BoxHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/models/pt/NexusPHP.java" afterPath="$PROJECT_DIR$/src/models/pt/NexusPHP.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/models/pt/PTChecker.java" afterPath="$PROJECT_DIR$/src/models/pt/PTChecker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tools/HttpHelper.java" afterPath="$PROJECT_DIR$/src/tools/HttpHelper.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -91,11 +88,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BoxHelper.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="BoxHelper.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/BoxHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="99">
-              <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
+            <state relative-caret-position="292">
+              <caret line="130" column="102" lean-forward="false" selection-start-line="130" selection-start-column="102" selection-end-line="130" selection-end-column="102" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -113,7 +110,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config.json" pinned="false" current-in-tab="true">
+      <file leaf-file-name="config.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="51">
@@ -258,11 +255,11 @@
         <option value="$PROJECT_DIR$/src/tools/ConvertJson.java" />
         <option value="$PROJECT_DIR$/src/models/cli/qb/QBChecker.java" />
         <option value="$PROJECT_DIR$/src/models/pt/PTChecker.java" />
-        <option value="$PROJECT_DIR$/src/BoxHelper.java" />
-        <option value="$PROJECT_DIR$/src/BoxHelper.java" />
         <option value="$PROJECT_DIR$/src/tools/HttpHelper.java" />
         <option value="$PROJECT_DIR$/src/models/pt/NexusPHP.java" />
         <option value="$PROJECT_DIR$/config.json" />
+        <option value="$PROJECT_DIR$/src/BoxHelper.java" />
+        <option value="$PROJECT_DIR$/src/BoxHelper.java" />
       </list>
     </option>
   </component>
@@ -1053,12 +1050,12 @@
       <workItem from="1540124156684" duration="8463000" />
       <workItem from="1540355636700" duration="1183000" />
       <workItem from="1540436016813" duration="12927000" />
-      <workItem from="1540774682407" duration="12215000" />
+      <workItem from="1540774682407" duration="12561000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="339736000" />
+    <option name="totallyTimeSpent" value="340082000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="873" extended-state="6" />
@@ -1437,16 +1434,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/BoxHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/tools/HttpHelper.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
@@ -1473,6 +1460,16 @@
           <caret line="3" column="30" lean-forward="false" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="30" />
           <folding>
             <marker date="1540985064000" expanded="true" signature="0:1" ph="{&quot;isFree&quot;: true...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BoxHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="292">
+          <caret line="130" column="102" lean-forward="false" selection-start-line="130" selection-start-column="102" selection-end-line="130" selection-end-column="102" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
