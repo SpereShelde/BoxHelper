@@ -351,20 +351,19 @@ public class HttpHelper {
             response = httpClient.execute(httpPost);
             entity = response.getEntity();
             res = EntityUtils.toString(entity, "UTF-8");
-//            Map resMap = ConvertJson.convertResponse(res);
-//            if (resMap.get("result").equals("success")) {
+            Map resMap = ConvertJson.convertResponse(res);
+            if (resMap.get("result").equals("success")) {
                 System.out.println("TR: removing torrent " + ids);
-//                return true;
-//            }
-//            else {
-//                System.out.println("TR: cannot remove torrent " + ids);
-//                return false;
-//            }
+                return true;
+            }
+            else {
+                System.out.println("TR: cannot remove torrent " + ids);
+                return false;
+            }
         } finally {
             response.close();
             httpClient.close();
         }
-        return true;
     }
 
 }

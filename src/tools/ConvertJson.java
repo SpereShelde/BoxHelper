@@ -157,9 +157,11 @@ public class ConvertJson {
             } else res.put("error", "notNull");
         }
         if (object.has("arguments")) {
-            JsonObject arguments = object.get("arguments").getAsJsonObject();
-            JsonObject torrentAdded = arguments.get("torrent-added").getAsJsonObject();
-            res.put("argumentsTorrentAddID", torrentAdded.get("id").getAsInt()) ;
+            JsonObject arguments = null;
+            JsonObject torrentAdded = null;
+            if (object.has("arguments")) arguments = object.get("arguments").getAsJsonObject();
+            if (arguments != null && arguments.has("torrent-added")) torrentAdded = arguments.get("torrent-added").getAsJsonObject();
+            if (torrentAdded != null && torrentAdded.has("id")) res.put("argumentsTorrentAddID", torrentAdded.get("id").getAsInt()) ;
         }
 
         return res;
