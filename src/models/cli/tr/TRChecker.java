@@ -138,7 +138,7 @@ public class TRChecker implements Runnable{
             torrentsToBeRemoved.forEach(torrent -> {
                 stringBuilder.append(torrent.getId() + ",");
             });
-            stringBuilder.deleteCharAt(stringBuilder.length());
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             try {
                 if (HttpHelper.removeTorrentFromTR(webUI + "/transmission/rpc", "BoxHelper", sid, "127.0.0.1", stringBuilder.toString()))
                     System.out.println("TR: successfully deleted torrents.");
