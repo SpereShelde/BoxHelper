@@ -306,12 +306,12 @@ public class HttpHelper {
         httpPost.addHeader("Host", host);
         httpPost.addHeader("Content-Type", "application/json");
         httpPost.addHeader("X-Transmission-Session-Id", sid);
-        if (download < 0) download = 1024000;
-        if (upload < 0) upload = 1024000;
+        if (download < 0) download = 1000;
+        if (upload < 0) upload = 1000;
         int finalDownload = (int)download;
         int finalUpload = (int)upload;
         urls.forEach(url -> {
-            String down = "{\"method\":\"torrent-add\",\"arguments\":{\"filename\":\"" + url + "\",\"paused\":true},\"tag\":\"\"}";
+            String down = "{\"method\":\"torrent-add\",\"arguments\":{\"filename\":\"" + url + "\",\"paused\":false},\"tag\":\"\"}";
             StringEntity stringEntity = new StringEntity(down, ContentType.APPLICATION_JSON);
             httpPost.setEntity(stringEntity);
             CloseableHttpResponse response = null;
@@ -322,7 +322,7 @@ public class HttpHelper {
                 Map resMap = ConvertJson.convertResponse(res);
                 if ("success".equals(resMap.get("result"))) {
                     System.out.println("TR: successfully add torrent " + url.substring(0, url.length() - 41));
-                    String set = "{\"method\":\"torrent-set\",\"arguments\":{\"downloadLimited\":true,\"downloadLimit\":" + finalDownload + ",\"uploadLimited\":true,\"uploadLimit\":" + finalUpload + ",\"ids\":" + resMap.get("argumentsTorrentAddID") + "},\"tag\":\"\"}";
+                    String set = "{\"method\":\"torrent-set\",\"arguments\":{\"downloadLimited\":true,\"downloadLimit\":" + finalDownload * 1024 + ",\"uploadLimited\":true,\"uploadLimit\":" + finalUpload * 1024 + ",\"ids\":" + resMap.get("argumentsTorrentAddID") + "},\"tag\":\"\"}";
                     stringEntity = new StringEntity(set, ContentType.APPLICATION_JSON);
                     httpPost.setEntity(stringEntity);
                     httpClient.execute(httpPost);

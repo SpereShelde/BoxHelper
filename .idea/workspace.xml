@@ -7,17 +7,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="125ace7c-ae70-4656-8ce2-f4caafb2a5a3" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/models/cli/tr/TRChecker.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/models/cli/tr/Transmission.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/models/torrent/TRTorrent.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BoxHelper.jar" afterPath="$PROJECT_DIR$/BoxHelper.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/htmlunit_driver_2_30_1_jar_with_dependencies.xml" afterPath="$PROJECT_DIR$/.idea/libraries/htmlunit_driver_2_30_1_jar_with_dependencies.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.json" afterPath="$PROJECT_DIR$/config.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BoxHelper.java" afterPath="$PROJECT_DIR$/src/BoxHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/models/cli/qb/QBittorrent.java" afterPath="$PROJECT_DIR$/src/models/cli/qb/QBittorrent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/models/pt/NexusPHP.java" afterPath="$PROJECT_DIR$/src/models/pt/NexusPHP.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tools/ConvertJson.java" afterPath="$PROJECT_DIR$/src/tools/ConvertJson.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tools/HttpHelper.java" afterPath="$PROJECT_DIR$/src/tools/HttpHelper.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -40,7 +33,17 @@
         <entry file="file://$PROJECT_DIR$/src/models/cli/de/DEChecker.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="173">
-              <caret line="55" column="20" lean-forward="true" selection-start-line="55" selection-start-column="20" selection-end-line="55" selection-end-column="20" />
+              <caret line="55" column="20" lean-forward="false" selection-start-line="55" selection-start-column="20" selection-end-line="55" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="QBittorrent.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/models/cli/qb/QBittorrent.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="167">
+              <caret line="37" column="25" lean-forward="true" selection-start-line="37" selection-start-column="25" selection-end-line="37" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -49,10 +52,10 @@
       <file leaf-file-name="config.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="78" lean-forward="true" selection-start-line="2" selection-start-column="78" selection-end-line="2" selection-end-column="78" />
+            <state relative-caret-position="68">
+              <caret line="4" column="73" lean-forward="false" selection-start-line="4" selection-start-column="73" selection-end-line="4" selection-end-column="73" />
               <folding>
-                <marker date="1541145885000" expanded="true" signature="0:1" ph="{&quot;isFree&quot;: true...}" />
+                <marker date="1541148462000" expanded="true" signature="0:1" ph="{&quot;isFree&quot;: true...}" />
               </folding>
             </state>
           </provider>
@@ -61,8 +64,8 @@
       <file leaf-file-name="BoxHelper.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/BoxHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="142" column="34" lean-forward="true" selection-start-line="142" selection-start-column="16" selection-end-line="142" selection-end-column="34" />
+            <state relative-caret-position="850">
+              <caret line="142" column="34" lean-forward="false" selection-start-line="142" selection-start-column="16" selection-end-line="142" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -80,11 +83,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NexusPHP.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="NexusPHP.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/models/pt/NexusPHP.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-446">
-              <caret line="201" column="51" lean-forward="false" selection-start-line="201" selection-start-column="51" selection-end-line="201" selection-end-column="51" />
+            <state relative-caret-position="47">
+              <caret line="230" column="24" lean-forward="false" selection-start-line="230" selection-start-column="24" selection-end-line="230" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -95,8 +98,8 @@
       <file leaf-file-name="TRChecker.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/models/cli/tr/TRChecker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1249">
-              <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+            <state relative-caret-position="183">
+              <caret line="119" column="21" lean-forward="false" selection-start-line="119" selection-start-column="21" selection-end-line="119" selection-end-column="21" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#471#472#0" expanded="true" />
@@ -110,20 +113,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Deluge.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/models/cli/de/Deluge.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="25">
-              <caret line="10" column="21" lean-forward="true" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Transmission.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/models/cli/tr/Transmission.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
+            <state relative-caret-position="311">
               <caret line="33" column="65" lean-forward="false" selection-start-line="33" selection-start-column="65" selection-end-line="33" selection-end-column="65" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -132,11 +125,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HttpHelper.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="HttpHelper.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/tools/HttpHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="172" column="24" lean-forward="true" selection-start-line="172" selection-start-column="24" selection-end-line="172" selection-end-column="24" />
+            <state relative-caret-position="229">
+              <caret line="313" column="115" lean-forward="false" selection-start-line="313" selection-start-column="115" selection-end-line="313" selection-end-column="115" />
               <folding />
             </state>
           </provider>
@@ -146,7 +139,7 @@
         <entry file="file://$PROJECT_DIR$/src/tools/ConvertJson.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="125">
-              <caret line="197" column="71" lean-forward="true" selection-start-line="197" selection-start-column="71" selection-end-line="197" selection-end-column="71" />
+              <caret line="197" column="71" lean-forward="false" selection-start-line="197" selection-start-column="71" selection-end-line="197" selection-end-column="71" />
               <folding />
             </state>
           </provider>
@@ -255,7 +248,6 @@
         <option value="$PROJECT_DIR$/cookies/tp.m-team.cc.json.bak" />
         <option value="$PROJECT_DIR$/cookies/hdhome.org.json" />
         <option value="$PROJECT_DIR$/setup.sh" />
-        <option value="$PROJECT_DIR$/src/models/cli/qb/QBittorrent.java" />
         <option value="$PROJECT_DIR$/cookies/ourbits.club.json" />
         <option value="$PROJECT_DIR$/cookies/totheglory.im.json" />
         <option value="$PROJECT_DIR$/cookies/pt.btschool.net.json" />
@@ -270,11 +262,12 @@
         <option value="$PROJECT_DIR$/src/models/cli/tr/TRChecker.java" />
         <option value="$PROJECT_DIR$/src/models/cli/tr/Transmission.java" />
         <option value="$PROJECT_DIR$/src/tools/ConvertJson.java" />
-        <option value="$PROJECT_DIR$/src/tools/HttpHelper.java" />
         <option value="$PROJECT_DIR$/src/BoxHelper.java" />
         <option value="$PROJECT_DIR$/src/BoxHelper.java" />
-        <option value="$PROJECT_DIR$/config.json" />
         <option value="$PROJECT_DIR$/src/models/pt/NexusPHP.java" />
+        <option value="$PROJECT_DIR$/src/models/cli/qb/QBittorrent.java" />
+        <option value="$PROJECT_DIR$/config.json" />
+        <option value="$PROJECT_DIR$/src/tools/HttpHelper.java" />
       </list>
     </option>
   </component>
@@ -546,7 +539,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.18355185" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -1094,12 +1087,12 @@
       <workItem from="1540124156684" duration="8463000" />
       <workItem from="1540355636700" duration="1183000" />
       <workItem from="1540436016813" duration="12927000" />
-      <workItem from="1540774682407" duration="28087000" />
+      <workItem from="1540774682407" duration="29836000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="355608000" />
+    <option name="totallyTimeSpent" value="357357000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="873" extended-state="6" />
@@ -1124,7 +1117,7 @@
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28277636" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34318766" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16597222" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1452,14 +1445,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/cli/qb/QBittorrent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-391">
-          <caret line="29" column="61" lean-forward="false" selection-start-line="29" selection-start-column="57" selection-end-line="29" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/models/cli/de/Deluge.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="25">
@@ -1479,7 +1464,7 @@
     <entry file="file://$PROJECT_DIR$/src/tools/ConvertJson.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="125">
-          <caret line="197" column="71" lean-forward="true" selection-start-line="197" selection-start-column="71" selection-end-line="197" selection-end-column="71" />
+          <caret line="197" column="71" lean-forward="false" selection-start-line="197" selection-start-column="71" selection-end-line="197" selection-end-column="71" />
           <folding />
         </state>
       </provider>
@@ -1487,15 +1472,35 @@
     <entry file="file://$PROJECT_DIR$/src/models/cli/de/DEChecker.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="173">
-          <caret line="55" column="20" lean-forward="true" selection-start-line="55" selection-start-column="20" selection-end-line="55" selection-end-column="20" />
+          <caret line="55" column="20" lean-forward="false" selection-start-line="55" selection-start-column="20" selection-end-line="55" selection-end-column="20" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/pt/NexusPHP.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="47">
+          <caret line="230" column="24" lean-forward="false" selection-start-line="230" selection-start-column="24" selection-end-line="230" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BoxHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="850">
+          <caret line="142" column="34" lean-forward="false" selection-start-line="142" selection-start-column="16" selection-end-line="142" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/models/cli/tr/TRChecker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1249">
-          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+        <state relative-caret-position="183">
+          <caret line="119" column="21" lean-forward="false" selection-start-line="119" selection-start-column="21" selection-end-line="119" selection-end-column="21" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#471#472#0" expanded="true" />
@@ -1508,17 +1513,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tools/HttpHelper.java">
+    <entry file="file://$PROJECT_DIR$/src/models/cli/qb/QBittorrent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="172" column="24" lean-forward="true" selection-start-line="172" selection-start-column="24" selection-end-line="172" selection-end-column="24" />
+        <state relative-caret-position="167">
+          <caret line="37" column="25" lean-forward="true" selection-start-line="37" selection-start-column="25" selection-end-line="37" selection-end-column="25" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="73" lean-forward="false" selection-start-line="4" selection-start-column="73" selection-end-line="4" selection-end-column="73" />
+          <folding>
+            <marker date="1541148462000" expanded="true" signature="0:1" ph="{&quot;isFree&quot;: true...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/models/cli/tr/Transmission.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
+        <state relative-caret-position="311">
           <caret line="33" column="65" lean-forward="false" selection-start-line="33" selection-start-column="65" selection-end-line="33" selection-end-column="65" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1526,33 +1541,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.json">
+    <entry file="file://$PROJECT_DIR$/src/tools/HttpHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="78" lean-forward="true" selection-start-line="2" selection-start-column="78" selection-end-line="2" selection-end-column="78" />
-          <folding>
-            <marker date="1541145885000" expanded="true" signature="0:1" ph="{&quot;isFree&quot;: true...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BoxHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="142" column="34" lean-forward="true" selection-start-line="142" selection-start-column="16" selection-end-line="142" selection-end-column="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/pt/NexusPHP.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-446">
-          <caret line="201" column="51" lean-forward="false" selection-start-line="201" selection-start-column="51" selection-end-line="201" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="229">
+          <caret line="313" column="115" lean-forward="false" selection-start-line="313" selection-start-column="115" selection-end-line="313" selection-end-column="115" />
+          <folding />
         </state>
       </provider>
     </entry>

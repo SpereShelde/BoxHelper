@@ -1,10 +1,8 @@
 {
-  "de_config":["http://your.box.url:8112/", "passwd", -1, "slow", 1],
-  "qb_config":["http://your.box.url:2017/", "username-passwd", -1, "slow", 1],
-  "tr_config":["http://your.box.url:9099/", "username:passwd", -1, "slow", 1],
+  "tr_config":["http://195.154.231.219:9099/transmission/web/", "wzf:boxofwzf97", -1, "slow", 1],
   "total_downloading_amount":5,
   "url_size_speed_cli":[
-    ["https://tp.m-team.cc/movie.php", 25, -1, "de", -1, 12, false]
+    ["https://pt.btschool.net/torrents.php", 1.3, 1.4, "tr", -1, 25, true]
   ],
   "cycle":20
 }
