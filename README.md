@@ -12,6 +12,8 @@
 
 ---
 
+再次进入screen查看BoxHelper状态：`screen -r boxHelper`
+
 如果提示 `java command not found` 请输入 `source ~/.bashrc`
 
 ---
