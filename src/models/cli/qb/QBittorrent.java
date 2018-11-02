@@ -73,7 +73,7 @@ public class QBittorrent extends Cli{
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Qb: version is not supported.");
+            System.out.println("QB: version is not supported.");
         }
 
     }

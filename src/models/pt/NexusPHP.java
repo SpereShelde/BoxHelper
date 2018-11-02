@@ -2,6 +2,7 @@ package models.pt;
 
 import models.cli.de.Deluge;
 import models.cli.qb.QBittorrent;
+import models.cli.tr.Transmission;
 import org.openqa.selenium.By;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -74,7 +75,7 @@ public class NexusPHP extends Pt implements Runnable {
                 source = driver.getPageSource();
                 passkey = source.substring(source.indexOf("passkey=") + 8, source.indexOf("passkey=") + 40);
             } else {
-                System.out.println("Cannot acquire passkey");
+                System.out.println("BoxHelper: cannot acquire passkey");
             }
         }
     }
@@ -87,7 +88,7 @@ public class NexusPHP extends Pt implements Runnable {
         if (url.contains("totheglory.im")){
             driver.get(url);
             String s = driver.getPageSource();
-            System.out.println("Searching torrent links from " + driver.getCurrentUrl() + "...");
+            System.out.println("BoxHelper: searching torrent links from " + driver.getCurrentUrl() + "...");
             webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("torrent_table")));
             originalString = driver.findElementById("torrent_table").getAttribute("outerHTML");
 
@@ -107,7 +108,7 @@ public class NexusPHP extends Pt implements Runnable {
                 if (idMatcher.find()) {
                     id = idMatcher.group().substring(9);
                     if ("".equals(id)) {
-                        System.out.println("Cannot find torrent id.");
+                        System.out.println("BoxHelper: cannot find torrent id.");
                         System.exit(106);
                     }
                 }
@@ -130,7 +131,7 @@ public class NexusPHP extends Pt implements Runnable {
                     }
                 }
                 if (this.urls.size() == 0 && !this.load) {
-                    System.out.println("Skip " + "https://" + domain + "/dl/" + id + "...");
+                    System.out.println("BoxHelper: skip " + "https://" + domain + "/dl/" + id + "...");
                     this.newUrls.add("https://" + domain + "/dl/" + id + "/" + this.passkey);
                 } else if (!this.urls.contains("https://totheglory.im/dl/" + id + "/" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
@@ -150,7 +151,7 @@ public class NexusPHP extends Pt implements Runnable {
         } else {
             driver.get(url);
             String s = driver.getPageSource();
-            System.out.println("Searching torrent links from " + driver.getCurrentUrl() + "...");
+            System.out.println("BoxHelper: searching torrent links from " + driver.getCurrentUrl() + "...");
             try {
                 webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.className("torrents")));
                 originalString = driver.findElementByClassName("torrents").getAttribute("outerHTML");
@@ -176,7 +177,7 @@ public class NexusPHP extends Pt implements Runnable {
                 if  (idMatcher.find()){
                     id  = idMatcher.group().substring(3);
                     if ("".equals(id)){
-                        System.out.println("Cannot find torrent id.");
+                        System.out.println("BoxHelper: cannot find torrent id.");
                         System.exit(106);
                     }
                 }
@@ -198,7 +199,7 @@ public class NexusPHP extends Pt implements Runnable {
                     }
                 }
                 if (this.urls.size() == 0 && !this.load){
-                    System.out.println("Skip " + "https://" + domain + "/download.php?id=" + id + "...");
+                    System.out.println("BoxHelper: skip " + "https://" + domain + "/download.php?id=" + id + "...");
                     this.newUrls.add("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey);
                 } else if (!this.urls.contains("https://" + domain + "/download.php?id=" + id + "&passkey=" + this.passkey)) {
                     if (size >= this.min && size <= this.max) {
@@ -239,6 +240,9 @@ public class NexusPHP extends Pt implements Runnable {
                     qBittorrent.addTorrents();
                     break;
                 case "tr":
+                    Transmission transmission = new Transmission(this.cliConfig[0], url, this.urls, this.down, this.up);
+                    transmission.setUrls(this.newUrls);
+                    transmission.addTorrents();
                 case "rt":
             }
             this.newUrls = new ArrayList<String>();

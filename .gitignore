@@ -27,3 +27,4 @@ out/production/boxHelper/tools/ExecuteShell.class
 out/production/boxHelper/tools/HttpHelper.class
 out/production/boxHelper/models/torrent/deTorrent/Test.class
 cookies/totheglory.im.json
+*.class

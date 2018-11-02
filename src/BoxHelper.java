@@ -1,5 +1,6 @@
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import models.cli.de.DEChecker;
+import models.cli.tr.TRChecker;
 import models.pt.NexusPHP;
 import models.cli.qb.QBChecker;
 import models.pt.PTChecker;
@@ -52,7 +53,7 @@ public class BoxHelper {
             e.printStackTrace();
         }
 
-        System.out.println("Loading cookies ...");
+        System.out.println("BoxHelper: loading cookies ...");
         for (Path path: jsonFiles) {
             try {
                 String domainName = path.getFileName().toString();
@@ -73,7 +74,7 @@ public class BoxHelper {
             drivers.put(url, driver);
         });
 
-        System.out.println("Initialization done.");
+        System.out.println("BoxHelper: initialization done.");
     }
 
     public static void main(String[] args) {
@@ -97,11 +98,12 @@ public class BoxHelper {
 
         while (true){
             ExecutorService executorService = Executors.newFixedThreadPool(cpuThreads);
-            System.out.println("\nBoxHelper " + count + " runs at " + time());
+            System.out.println("\nBoxHelper: " + count + " runs at " + time());
             QBChecker qbChecker = new QBChecker();
             DEChecker deChecker = new DEChecker();
+            TRChecker trChecker = new TRChecker();
             if (boxHelper.configures.containsKey("deConfig")){
-                System.out.println("Checking DE status...");
+                System.out.println("DE: checking status...");
                 Object[] de = (Object[]) boxHelper.configures.get("deConfig");
                 String[] deConfig = new String[]{de[0].toString(), de[1].toString(), de[2].toString(), de[3].toString(), de[4].toString()};
                 Long space;
@@ -109,9 +111,10 @@ public class BoxHelper {
                 else space = new Long(deConfig[2]) * 1073741824;
                 deChecker = new DEChecker(deConfig[0], deConfig[1], space, deConfig[3], Integer.parseInt(deConfig[4]));
                 deChecker.run();
+                System.out.println("DE: " + deChecker.getDownloadingAmount() + " torrents is downloading...");
             }
             if (boxHelper.configures.containsKey("qbConfig")){
-                System.out.println("Checking QB status...");
+                System.out.println("QB: checking status...");
                 Object[] qb = (Object[]) boxHelper.configures.get("qbConfig");
                 String[] qbConfig = new String[]{qb[0].toString(), qb[1].toString(), qb[2].toString(), qb[3].toString(), qb[4].toString()};
                 Long space;
@@ -119,17 +122,25 @@ public class BoxHelper {
                 else space = new Long(qbConfig[2]) * 1073741824;
                 qbChecker = new QBChecker(qbConfig[0], qbConfig[1], space, qbConfig[3], Integer.parseInt(qbConfig[4]));
                 qbChecker.run();
+                System.out.println("QB: " + qbChecker.getDownloadingAmount() + " torrents is downloading...");
             }
-
             if (boxHelper.configures.containsKey("trConfig")){
-
+                System.out.println("TR: checking status...");
+                Object[] tr = (Object[]) boxHelper.configures.get("trConfig");
+                String[] trConfig = new String[]{tr[0].toString(), tr[1].toString(), tr[2].toString(), tr[3].toString(), tr[4].toString()};
+                Long space;
+                if ("-1".equals(trConfig[2])) space = new Long("102400") * 1073741824;
+                else space = new Long(trConfig[2]) * 1073741824;
+                trChecker = new TRChecker(trConfig[0], space, trConfig[3], Integer.parseInt(trConfig[4]));
+                trChecker.run();
+                System.out.println("TR: " + trChecker.getDownloadingAmount() + " torrents is downloading...");
             }
             if (boxHelper.configures.containsKey("rtConfig")){
 
             }
             int amount = (int)boxHelper.configures.get("downloading_amount");
-            if (qbChecker.getDownloadingAmount() + deChecker.getDownloadingAmount() >= (amount<0?65500:amount)) {
-                System.out.println("Total amount of downloading torrents over limit, stop adding torrents...");
+            if (qbChecker.getDownloadingAmount() + deChecker.getDownloadingAmount() + trChecker.getDownloadingAmount() >= (amount<0?65500:amount)) {
+                System.out.println("BoxHelper: Total amount of downloading torrents over limit, stop adding torrents...");
                 pts.forEach(pt -> {
                     if (pt instanceof NexusPHP) ((NexusPHP) pt).setDownload(false);
                 });
@@ -140,6 +151,7 @@ public class BoxHelper {
             executorService.shutdown();
             deChecker.setDownloadingAmount(0);
             qbChecker.setDownloadingAmount(0);
+            trChecker.setDownloadingAmount(0);
             try {
                 sleep((long) (1000*Double.valueOf(boxHelper.configures.get("cycle").toString())));
             } catch (InterruptedException e) {

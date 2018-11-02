@@ -1,5 +1,8 @@
 package tools;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import models.torrent.TRTorrent;
 import models.torrent.deTorrent.DETorrent;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -172,8 +175,6 @@ public class HttpHelper {
             response = httpClient.execute(httpPost);
             entity = response.getEntity();
             res = EntityUtils.toString(entity, "UTF-8");
-            return ConvertJson.convertDETorrents(res);
-
         } catch (Exception e) {
         }
         return ConvertJson.convertDETorrents(res);
@@ -253,29 +254,116 @@ public class HttpHelper {
         }
     }
 
-//    public static boolean doPostNormalForm(String destination, String userAgent, String cookieValue, String host, Map<String, String> contents) throws IOException {
-//        CloseableHttpClient httpClient = HttpClients.createDefault();
-//        HttpPost httpPost = new HttpPost(destination);
-//        //创建参数队列
-//        httpPost.addHeader("User-Agent", userAgent);
-//        httpPost.addHeader("Cookie", "SID=" + cookieValue);
-//        httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
-//        httpPost.addHeader("Host", host);
-//
-//        List <NameValuePair> nvps = new ArrayList <NameValuePair>();
-//        contents.forEach((k,v) -> nvps.add(new BasicNameValuePair(k, v)));
-//        httpPost.setEntity(new UrlEncodedFormEntity(nvps));
-//        CloseableHttpResponse response = httpClient.execute(httpPost);
-//        HttpEntity entity = null;
-//        try {
-//            // 获取响应实体
-//            entity = response.getEntity();
-//
-//        } finally {
-//            response.close();
-//            httpClient.close();
-//        }
-//        return entity != null && response.getStatusLine().toString().contains("200");//Not precise
-//    }
+    public static String loginToTR(String destination, String userAgent, String host){
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        String login = "{\"method\":\"session-get\",\"arguments\":{},\"tag\":\"\"}";
+        HttpPost httpPost = new HttpPost(destination);
+        //创建参数队列
+        httpPost.addHeader("User-Agent", userAgent);
+        httpPost.addHeader("Host", host);
+        httpPost.addHeader("Content-Type", "application/json");
+
+        StringEntity stringEntity = new StringEntity(login, ContentType.APPLICATION_JSON);
+        httpPost.setEntity(stringEntity);
+
+        CloseableHttpResponse response = null;
+        try {
+            response = httpClient.execute(httpPost);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String cookie = response.getFirstHeader("x-transmission-session-id").getValue();
+        return cookie;
+    }
+
+    public static ArrayList<TRTorrent> getTorrentsFromTR(String destination, String userAgent, String sid, String host, String params) throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(destination);
+        httpPost.addHeader("User-Agent", userAgent);
+        httpPost.addHeader("Host", host);
+        httpPost.addHeader("Content-Type", "application/json");
+        httpPost.addHeader("X-Transmission-Session-Id", sid);
+        String get = "{\"method\":\"torrent-get\",\"arguments\":{\"fields\":[" + params + "]},\"tag\":\"\"}";
+        StringEntity stringEntity = new StringEntity(get, ContentType.APPLICATION_JSON);
+        httpPost.setEntity(stringEntity);
+        CloseableHttpResponse response = null;
+        HttpEntity entity = null;
+        String res = "";
+        try {
+            response = httpClient.execute(httpPost);
+            entity = response.getEntity();
+            res = EntityUtils.toString(entity, "UTF-8");
+
+        } catch (Exception e) {
+        }
+        return ConvertJson.convertTRTorrents(res);
+    }
+
+    public static void addTorrentsToTR(String destination, String userAgent, String sid, String host, ArrayList<String> urls, double download, double upload) throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(destination);
+        httpPost.addHeader("User-Agent", userAgent);
+        httpPost.addHeader("Host", host);
+        httpPost.addHeader("Content-Type", "application/json");
+        httpPost.addHeader("X-Transmission-Session-Id", sid);
+        if (download < 0) download = 1024000;
+        if (upload < 0) upload = 1024000;
+        int finalDownload = (int)download;
+        int finalUpload = (int)upload;
+        urls.forEach(url -> {
+            String down = "{\"method\":\"torrent-add\",\"arguments\":{\"filename\":\"" + url + "\",\"paused\":true},\"tag\":\"\"}";
+            StringEntity stringEntity = new StringEntity(down, ContentType.APPLICATION_JSON);
+            httpPost.setEntity(stringEntity);
+            CloseableHttpResponse response = null;
+            try {
+                response = httpClient.execute(httpPost);
+                HttpEntity entity = response.getEntity();
+                String res = EntityUtils.toString(entity, "UTF-8");
+                Map resMap = ConvertJson.convertResponse(res);
+                if ("success".equals(resMap.get("result"))) {
+                    System.out.println("TR: successfully add torrent " + url.substring(0, url.length() - 41));
+                    String set = "{\"method\":\"torrent-set\",\"arguments\":{\"downloadLimited\":true,\"downloadLimit\":" + finalDownload + ",\"uploadLimited\":true,\"uploadLimit\":" + finalUpload + ",\"ids\":" + resMap.get("argumentsTorrentAddID") + "},\"tag\":\"\"}";
+                    stringEntity = new StringEntity(set, ContentType.APPLICATION_JSON);
+                    httpPost.setEntity(stringEntity);
+                    httpClient.execute(httpPost);
+                } else System.out.println("TR: cannot add torrent");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        });
+    }
+
+    public static boolean removeTorrentFromTR(String destination, String userAgent, String sid, String host, String ids) throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(destination);
+        httpPost.addHeader("User-Agent", userAgent);
+        httpPost.addHeader("Host", host);
+        httpPost.addHeader("Content-Type", "application/json");
+        httpPost.addHeader("X-Transmission-Session-Id", sid);
+        String get = "{\"method\":\"torrent-remove\",\"arguments\":{\"ids\":[" + ids + "],\"delete-local-data\":true},\"tag\":\"\"}";
+        StringEntity stringEntity = new StringEntity(get, ContentType.APPLICATION_JSON);
+        httpPost.setEntity(stringEntity);
+        CloseableHttpResponse response = null;
+        HttpEntity entity = null;
+        String res = "";
+        try {
+            response = httpClient.execute(httpPost);
+            entity = response.getEntity();
+            res = EntityUtils.toString(entity, "UTF-8");
+            Map resMap = ConvertJson.convertResponse(res);
+            if (resMap.get("result").equals("success")) {
+                System.out.println("TR: removing torrent " + ids);
+                return true;
+            }
+            else {
+                System.out.println("TR: cannot remove torrent " + ids);
+                return false;
+            }
+        } finally {
+            response.close();
+            httpClient.close();
+        }
+    }
 
 }

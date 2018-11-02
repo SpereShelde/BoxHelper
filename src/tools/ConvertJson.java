@@ -2,6 +2,7 @@ package tools;
 
 import com.google.gson.*;
 import models.torrent.QBTorrent;
+import models.torrent.TRTorrent;
 import models.torrent.deTorrent.DEResponse;
 import models.torrent.deTorrent.DETorrent;
 import models.torrent.deTorrent.Torrents;
@@ -56,6 +57,8 @@ public class ConvertJson {
             for (JsonElement a: de) {
                 if (a != null || !"".equals(a.getAsString())) trConfig.add(a.getAsString());
             }
+            String webui = trConfig.get(0).replace("://", "://" + trConfig.get(1) + "@");
+            if (webui.contains("transmission")) trConfig.set(0, webui.substring(0, webui.indexOf("transmission") - 1));
             configures.put("trConfig", trConfig.toArray());
         }
 
@@ -78,10 +81,10 @@ public class ConvertJson {
             double down = url.get(4).getAsDouble();
             double up = url.get(5).getAsDouble();
             boolean load = url.get(6).getAsBoolean();
-            if ("".equals(min)) min = -1;
-            if ("".equals(max)) max = -1;
-            if ("".equals(down)) down = -1;
-            if ("".equals(up)) up = -1;
+            if (min < 0) min = -1;
+            if (max < 0) max = -1;
+            if (down < 0) down = -1;
+            if (up < 0) up = -1;
             if (!"".equals(url.get(0).getAsString())) {
                 urlSizeSpeedCli.put(url.get(0).getAsString(), cli + "/" +min + "/" + max + "/" + down + "/" + up + "/" + load);
             }
@@ -153,6 +156,11 @@ public class ConvertJson {
                 res.put("error", "null");
             } else res.put("error", "notNull");
         }
+        if (object.has("arguments")) {
+            JsonObject arguments = object.get("arguments").getAsJsonObject();
+            JsonObject torrentAdded = arguments.get("torrent-added").getAsJsonObject();
+            res.put("argumentsTorrentAddID", torrentAdded.get("id").getAsInt()) ;
+        }
 
         return res;
     }
@@ -196,6 +204,32 @@ public class ConvertJson {
             deTorrents.add(deTorrent);
         }
         return deTorrents;
+    }
+
+    public static ArrayList<TRTorrent> convertTRTorrents(String content) {
+        ArrayList<TRTorrent> trTorrents = new ArrayList<>();
+        JsonParser jsonParser = new JsonParser();
+        int status, id;
+        long activityDate, addedDate, doneDate, rateDownload, rateUpload, totalSize;
+        double uploadRatio;
+
+        JsonObject jsonObject = (JsonObject) jsonParser.parse(content);
+        JsonObject argument = jsonObject.getAsJsonObject("arguments");
+        JsonArray torrents = argument.getAsJsonArray("torrents");
+        for (JsonElement torrent: torrents) {
+            JsonObject object = torrent.getAsJsonObject();
+            activityDate = object.get("activityDate").getAsLong();
+            addedDate = object.get("addedDate").getAsLong();
+            doneDate = object.get("doneDate").getAsLong();
+            rateDownload = object.get("rateDownload").getAsLong();
+            rateUpload = object.get("rateUpload").getAsLong();
+            totalSize = object.get("totalSize").getAsLong();
+            uploadRatio = object.get("uploadRatio").getAsDouble();
+            status = object.get("status").getAsInt();
+            id = object.get("id").getAsInt();
+            trTorrents.add(new TRTorrent(id, status, activityDate, addedDate, doneDate, rateDownload, rateUpload, totalSize, uploadRatio));
+        }
+        return trTorrents;
     }
 }
 
