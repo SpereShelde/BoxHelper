@@ -4,6 +4,7 @@ import models.cli.de.Deluge;
 import models.cli.qb.QBittorrent;
 import models.cli.tr.Transmission;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -57,25 +58,21 @@ public class NexusPHP extends Pt implements Runnable {
     }
     private void getPasskey() {
         String source;
-        Pattern passkeylink;
         if (url.contains("totheglory.im")){
             driver.get("https://totheglory.im/my.php");
             String[] s = driver.getPageSource().split("Passkey");
             String[] t = s[1].split("\n");
             passkey = t[3].trim();
         } else {
-            driver.get(url);
+            driver.get("https://" + domain + "/usercp.php");
+            if (!driver.getCurrentUrl().equals("https://" + domain + "/usercp.php")) driver.get("https://" + domain + "/usercp.php");
             source = driver.getPageSource();
-            passkeylink = Pattern.compile("href=.*details.php\\?id=[0-9]*.*hit=1");
-            Matcher sizeMatcher = passkeylink.matcher(source);
-            if (sizeMatcher.find()) {
-                driver.get("https://" + this.domain + "/" + sizeMatcher.group().substring(6));
-            }
-            if (driver.getPageSource().contains("passkey=")) {
-                source = driver.getPageSource();
-                passkey = source.substring(source.indexOf("passkey=") + 8, source.indexOf("passkey=") + 40);
+            Pattern passkeyPattern = Pattern.compile("[0-9a-z]{32}");
+            Matcher passkeyMatcher = passkeyPattern.matcher(source);
+            if (passkeyMatcher.find()) {
+                passkey = passkeyMatcher.group();
             } else {
-                System.out.println("BoxHelper: cannot acquire passkey");
+                System.out.println("BoxHelper: Cannot acquire passkey...");
             }
         }
     }
@@ -87,7 +84,6 @@ public class NexusPHP extends Pt implements Runnable {
         WebDriverWait webDriverWait = new WebDriverWait(driver, 10);
         if (url.contains("totheglory.im")){
             driver.get(url);
-            String s = driver.getPageSource();
             System.out.println("BoxHelper: searching torrent links from " + driver.getCurrentUrl() + "...");
             webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("torrent_table")));
             originalString = driver.findElementById("torrent_table").getAttribute("outerHTML");
@@ -149,9 +145,8 @@ public class NexusPHP extends Pt implements Runnable {
                 dateMatcher = datePattern.matcher(searchString);
             }
         } else {
+
             driver.get(url);
-            String s = driver.getPageSource();
-            System.out.println("BoxHelper: searching torrent links from " + driver.getCurrentUrl() + "...");
             try {
                 webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.className("torrents")));
                 originalString = driver.findElementByClassName("torrents").getAttribute("outerHTML");

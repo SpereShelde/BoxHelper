@@ -24,6 +24,8 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.util.*;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Created by SpereShelde on 2018/7/3.
  */
@@ -308,30 +310,36 @@ public class HttpHelper {
         httpPost.addHeader("X-Transmission-Session-Id", sid);
         if (download < 0) download = 1000;
         if (upload < 0) upload = 1000;
-        int finalDownload = (int)download;
-        int finalUpload = (int)upload;
-        urls.forEach(url -> {
-            String down = "{\"method\":\"torrent-add\",\"arguments\":{\"filename\":\"" + url + "\",\"paused\":false},\"tag\":\"\"}";
-            StringEntity stringEntity = new StringEntity(down, ContentType.APPLICATION_JSON);
-            httpPost.setEntity(stringEntity);
-            CloseableHttpResponse response = null;
-            try {
+        StringBuilder ids = new StringBuilder();
+        StringEntity stringEntity;
+        try {
+            for (String url:urls) {
+                String down = "{\"method\":\"torrent-add\",\"arguments\":{\"filename\":\"" + url + "\",\"paused\":true},\"tag\":\"\"}";
+                stringEntity = new StringEntity(down, ContentType.APPLICATION_JSON);
+                httpPost.setEntity(stringEntity);
+                CloseableHttpResponse response = null;
                 response = httpClient.execute(httpPost);
                 HttpEntity entity = response.getEntity();
                 String res = EntityUtils.toString(entity, "UTF-8");
                 Map resMap = ConvertJson.convertResponse(res);
                 if ("success".equals(resMap.get("result"))) {
                     System.out.println("TR: successfully add torrent " + url.substring(0, url.length() - 41));
-                    String set = "{\"method\":\"torrent-set\",\"arguments\":{\"downloadLimited\":true,\"downloadLimit\":" + finalDownload * 1024 + ",\"uploadLimited\":true,\"uploadLimit\":" + finalUpload * 1024 + ",\"ids\":" + resMap.get("argumentsTorrentAddID") + "},\"tag\":\"\"}";
-                    stringEntity = new StringEntity(set, ContentType.APPLICATION_JSON);
-                    httpPost.setEntity(stringEntity);
-                    httpClient.execute(httpPost);
+                    ids.append((int)resMap.get("argumentsTorrentAddID") + ",");
                 } else System.out.println("TR: cannot add torrent");
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            String id = ids.deleteCharAt(ids.length() - 1).toString();
+            String set = "{\"method\":\"torrent-set\",\"arguments\":{\"downloadLimited\":true,\"downloadLimit\":" + (int)download * 1024 + ",\"uploadLimited\":true,\"uploadLimit\":" + (int)upload * 1024 + ",\"ids\":[" + id + "]},\"tag\":\"\"}";
+            stringEntity = new StringEntity(set, ContentType.APPLICATION_JSON);
+            httpPost.setEntity(stringEntity);
+            httpClient.execute(httpPost);
+            String start = "{\"method\":\"torrent-start\",\"arguments\":{\"ids\":[" + id + "]},\"tag\":\"\"}";
+            stringEntity = new StringEntity(start, ContentType.APPLICATION_JSON);
+            httpPost.setEntity(stringEntity);
+            httpClient.execute(httpPost);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        });
     }
 
     public static boolean removeTorrentFromTR(String destination, String userAgent, String sid, String host, String ids) throws IOException {
