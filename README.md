@@ -2,44 +2,16 @@
 
 ---
 
-写在前面：当初设计的时候考虑的功能比较简单，后来不断增加功能使得代码存在一些不太好处理的bug，比如偶发性漏种，删种逻辑不完美等。效果远比不上手动操作，只适合懒人。正在写第二代，争取做到真正的无人监管。
+BoxHelper is not accomplished yet. Please download previous version in [releases](https://github.com/SpereShelde/BoxHelper/releases)
 
 ---
 
-## Usage
-
-`screen -R boxHelper`
-
-`wget --no-check-certificate -qO boxHelper.sh https://raw.githubusercontent.com/SpereShelde/Scripts/master/boxHelper.sh`
-
-`bash boxHelper.sh`
-
-`Ctrl + a + d` 退出 screen
-
----
-
-再次进入screen查看BoxHelper状态：`screen -r boxHelper`
-
-如果提示 `java command not found` 请输入 `source ~/.bashrc`
+Home page: [boxhelper.io](http://boxhelper.io)
 
 ---
 
 ## Watch this！ 
 
-- BoxHelper 需要你提供Cookie，并会获取你的passkey，但是 BoxHelper 不会上传他们
-
 - BoxHelper needs your cookie and will acquire your passkey, but BoxHelper will not upload them.
 
-- 账号有限，无法测试更多站点。如果确定 BoxHelper 支持 或 不支持 你所使用的站点，请告诉我，谢谢
-
-- We cannot test all sites. Please help us to test and tell me the result, thank you!
-
-- 反馈问题或希望适配其他站点，请发Issue或联系我: `spereshelde#gmail.com`
-
 - To feedback bugs or want us to test more sites, just open an issue or mail me at `spereshelde#gmail.com`
-
-## To Do List
-
-- 支持 tr & rt
-
-- Free种变黑的处理策略

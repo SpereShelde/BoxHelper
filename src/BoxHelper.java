@@ -1,163 +1,79 @@
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import models.cli.de.DEChecker;
-import models.cli.tr.TRChecker;
-import models.pt.NexusPHP;
-import models.cli.qb.QBChecker;
-import models.pt.PTChecker;
-import models.pt.Pt;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import tools.ConvertJson;
-import java.io.IOException;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import controller.ClientsController;
+import controller.SitesController;
+import entity.clients.Client;
+import entity.clients.qbittorrent.Qbittorrent;
+import entity.config.Config;
+import entity.sites.torrents.RawTorrent;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
-import static java.lang.Thread.interrupted;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.TreeSet;
+
 import static java.lang.Thread.sleep;
 
 /**
- * Created by SpereShelde on 2018/6/6.
+ * Created by SpereShelde on 2018/10/30.
  */
 public class BoxHelper {
 
-    private Map configures = new HashMap();
-    private Map cookies = new HashMap();
-    private Map drivers = new HashMap();
-    private int urlNum = 1;
+    private HashSet<RawTorrent> torrents = new HashSet<>();
+    private HashSet<String> torrentsInfo = new HashSet<>(); // domain-id, for quick check;
+    private int count = 1;
 
-    private void getConfigures() {// Get configures from file.
+    public static void main(String[] args) {
 
-        try {
-            this.configures = ConvertJson.convertConfigure("config.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ArrayList<Path> jsonFiles = new ArrayList<>();
-
-        try {
-            DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("cookies"));
-            for(Path path : stream){
-                if (path.getFileName().toString().endsWith(".json")) {
-                    jsonFiles.add(path);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("BoxHelper: loading cookies ...");
-        for (Path path: jsonFiles) {
+        BoxHelper boxHelper = new BoxHelper();
+        Properties configProperties = Config.loadConfig();
+        Properties pageProperties = Config.loadPages();
+        SitesController sitesController = new SitesController(pageProperties, new RawTorrent());
+        HashSet<Client> clients = new HashSet<>();
+        Qbittorrent qbittorrent = null;
+        if ("true".equals(configProperties.getProperty("enable_qBittorrent"))) {
+            qbittorrent = new Qbittorrent(Integer.valueOf(configProperties.getProperty("qBittorrent_Web_UI_port")), configProperties.getProperty("qBittorrent_Web_UI_username"), configProperties.getProperty("qBittorrent_Web_UI_password"));
             try {
-                String domainName = path.getFileName().toString();
-                cookies.put(domainName.substring(0, domainName.lastIndexOf(".")), ConvertJson.convertCookie(path.toString()));
+                qbittorrent.login();
+                if (qbittorrent.acquireApiVersion()) clients.add(qbittorrent);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        Map<String, String> urlSizeSpeedCli = (Map<String, String>) this.configures.get("url_size_speed_cli");
-        this.urlNum = urlSizeSpeedCli.size();
-        urlSizeSpeedCli.forEach((url, sizeSpeedCli) -> {
-            HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.FIREFOX_45, false);
-            String domain = url.substring(url.indexOf("//") + 2, url.indexOf("/", url.indexOf("//") + 2));
-            driver.get("https://" + domain);
-            ArrayList<Cookie> cookiesT = (ArrayList) cookies.get(domain);
-            cookiesT.forEach(cookie -> driver.manage().addCookie(cookie));
-            drivers.put(url, driver);
-        });
-
-        System.out.println("BoxHelper: initialization done.");
-    }
-
-    public static void main(String[] args) {
-
-        Logger logger = Logger.getLogger("");
-        logger.setLevel(Level.OFF);
-        BoxHelper boxHelper = new BoxHelper();
-        boxHelper.getConfigures();
-        int cpuThreads = Runtime.getRuntime().availableProcessors()<boxHelper.urlNum?Runtime.getRuntime().availableProcessors():boxHelper.urlNum;
-        int count  = 1;
-
-        ArrayList<Pt> pts = new ArrayList<>();
-        Map<String, String> urlSizeSpeedCli = (Map<String, String>) boxHelper.configures.get("url_size_speed_cli");
-
-        boxHelper.drivers.forEach((url, driver) -> {
-            String ussc = urlSizeSpeedCli.get(url.toString());
-            Object[] a = (Object[]) boxHelper.configures.get(ussc.substring(0,2) + "Config");
-            String[] config = new String[]{a[0].toString(), a[1].toString(), a[2].toString()};
-            pts.add(PTChecker.dispatch(url.toString(), ussc.substring(3, ussc.lastIndexOf("/")), (HtmlUnitDriver)driver, ussc.substring(0,2), config, ussc.substring(ussc.lastIndexOf("/") + 1).equals("true")));
-        });
-
-        while (true){
-            ExecutorService executorService = Executors.newFixedThreadPool(cpuThreads);
-            System.out.println("\nBoxHelper: " + count + " runs at " + time());
-            QBChecker qbChecker = new QBChecker();
-            DEChecker deChecker = new DEChecker();
-            TRChecker trChecker = new TRChecker();
-            if (boxHelper.configures.containsKey("deConfig")){
-                System.out.println("DE: checking status...");
-                Object[] de = (Object[]) boxHelper.configures.get("deConfig");
-                String[] deConfig = new String[]{de[0].toString(), de[1].toString(), de[2].toString(), de[3].toString(), de[4].toString()};
-                Long space;
-                if ("-1".equals(deConfig[2])) space = new Long("102400") * 1073741824;
-                else space = new Long(deConfig[2]) * 1073741824;
-                deChecker = new DEChecker(deConfig[0], deConfig[1], space, deConfig[3], Integer.parseInt(deConfig[4]));
-                deChecker.run();
-                System.out.println("DE: " + deChecker.getDownloadingAmount() + " torrents is downloading...");
+        ClientsController clientsController = new ClientsController(clients);
+        RawTorrent torrent = new RawTorrent();
+        while (true) {
+            if (boxHelper.count % 6 == 1) {
+                configProperties = Config.loadConfig();
+                clientsController.setProperties(configProperties);
+                sitesController.setProperties(pageProperties);
             }
-            if (boxHelper.configures.containsKey("qbConfig")){
-                System.out.println("QB: checking status...");
-                Object[] qb = (Object[]) boxHelper.configures.get("qbConfig");
-                String[] qbConfig = new String[]{qb[0].toString(), qb[1].toString(), qb[2].toString(), qb[3].toString(), qb[4].toString()};
-                Long space;
-                if ("-1".equals(qbConfig[2])) space = new Long("102400") * 1073741824;
-                else space = new Long(qbConfig[2]) * 1073741824;
-                qbChecker = new QBChecker(qbConfig[0], qbConfig[1], space, qbConfig[3], Integer.parseInt(qbConfig[4]));
-                qbChecker.run();
-                System.out.println("QB: " + qbChecker.getDownloadingAmount() + " torrents is downloading...");
-            }
-            if (boxHelper.configures.containsKey("trConfig")){
-                System.out.println("TR: checking status...");
-                Object[] tr = (Object[]) boxHelper.configures.get("trConfig");
-                String[] trConfig = new String[]{tr[0].toString(), tr[1].toString(), tr[2].toString(), tr[3].toString(), tr[4].toString()};
-                Long space;
-                if ("-1".equals(trConfig[2])) space = new Long("102400") * 1073741824;
-                else space = new Long(trConfig[2]) * 1073741824;
-                trChecker = new TRChecker(trConfig[0], space, trConfig[3], Integer.parseInt(trConfig[4]));
-                trChecker.run();
-                System.out.println("TR: " + trChecker.getDownloadingAmount() + " torrents is downloading...");
-            }
-            if (boxHelper.configures.containsKey("rtConfig")){
-
-            }
-            int amount = (int)boxHelper.configures.get("downloading_amount");
-            if (qbChecker.getDownloadingAmount() + deChecker.getDownloadingAmount() + trChecker.getDownloadingAmount() >= (amount<0?65500:amount)) {
-                System.out.println("BoxHelper: Total amount of downloading torrents over limit, stop adding torrents...");
-                pts.forEach(pt -> {
-                    if (pt instanceof NexusPHP) ((NexusPHP) pt).setDownload(false);
-                });
-            }
-            pts.forEach(pt -> {
-                if (pt instanceof NexusPHP) executorService.submit((NexusPHP) pt);
-            });
-            executorService.shutdown();
-            deChecker.setDownloadingAmount(0);
-            qbChecker.setDownloadingAmount(0);
-            trChecker.setDownloadingAmount(0);
+            System.out.println();
+            System.out.println("\u001b[37;1m [Info]   \u001b[34m    BoxHelper:\u001b[0m BoxHelper: the " + boxHelper.count + " run.");
+//            System.out.println("BoxHelper: acquired total " + boxHelper.torrents.size() + " torrents.");
+            sitesController.run();
+            clientsController.setTorrent(sitesController.getTorrent());
+            clientsController.run();
+            boxHelper.count++;
+            sitesController.setAddedTorrents(clientsController.getAddedTorrents());
             try {
-                sleep((long) (1000*Double.valueOf(boxHelper.configures.get("cycle").toString())));
+                sleep(30000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            count++;
+            sitesController.setAllTorrents(new HashSet<RawTorrent>());
+            sitesController.setQualifiedTorrents(new TreeSet<RawTorrent>());
         }
+
     }
 }
+//        System.out.println("\u001b[31;1m [Error]  \u001b[34m    BoxHelper:\u001b[0m Cannot acquire passkey...");
+//        System.out.println("\u001b[31;1m [Error]  \u001b[36m  qBittorrent:\u001b[0m Cannot acquire passkey...");
+//        System.out.println("\u001b[31;1m [Error]  \u001b[32m       Deluge:\u001b[0m Cannot acquire passkey...");
+//        System.out.println("\u001b[31;1m [Error]  \u001b[35m Transmission:\u001b[0m Cannot acquire passkey...");
+//        System.out.println("\u001b[33;1m [Warning]\u001b[34m    BoxHelper:\u001b[0m Cannot acquire date...");
+//        System.out.println("\u001b[33;1m [Warning]\u001b[36m  qBittorrent:\u001b[0m Cannot acquire date...");
+//        System.out.println("\u001b[33;1m [Warning]\u001b[32m       Deluge:\u001b[0m Cannot acquire date...");
+//        System.out.println("\u001b[33;1m [Warning]\u001b[35m Transmission:\u001b[0m Cannot acquire date...");
+//        System.out.println("\u001b[37;1m [Info]   \u001b[34m    BoxHelper:\u001b[0m Cannot acquire date...");
+//        System.out.println("\u001b[37;1m [Info]   \u001b[36m  qBittorrent:\u001b[0m Cannot acquire date...");
+//        System.out.println("\u001b[37;1m [Info]   \u001b[32m       Deluge:\u001b[0m Cannot acquire date...");
+//        System.out.println("\u001b[37;1m [Info]   \u001b[35m Transmission:\u001b[0m Cannot acquire date...");
