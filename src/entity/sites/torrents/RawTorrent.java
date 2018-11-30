@@ -8,12 +8,11 @@ import java.util.Date;
 public class RawTorrent implements Comparable {
 
     private String domain, name, source, uploader, link;
-    private double size = 0;
+    private Long size;
     private Date timeOfLive, timeOfFree = new Date(946656000);
     private int id, seeder, leecher, complete = 0;
     private boolean sticky, free, diy, cnSubtitle, restrict, hr = false;
     private float uploadLimit, downloadLimit;
-    private Unit unit;
     private String hash;
 
     @Override
@@ -27,10 +26,6 @@ public class RawTorrent implements Comparable {
     public boolean equals(Object obj) {
         RawTorrent raw = (RawTorrent) obj;
         return this.timeOfLive.getTime() == raw.timeOfLive.getTime();
-    }
-
-    public enum Unit{
-        KB, MB, GB, TB, PB
     }
 
     public RawTorrent() {
@@ -109,12 +104,8 @@ public class RawTorrent implements Comparable {
         this.uploader = uploader;
     }
 
-    public double getSize() {
+    public Long getSize() {
         return size;
-    }
-
-    public void setSize(double size) {
-        this.size = size;
     }
 
     public Date getTimeOfLive() {
@@ -205,35 +196,30 @@ public class RawTorrent implements Comparable {
         this.hr = hr;
     }
 
-    public Unit getUnit() {
-        return unit;
+    public void setSize(Long size) {
+        this.size = size;
     }
 
-    public void setUnit(Unit unit) {
-        this.unit = unit;
-    }
-
-    @Override
-    public String toString() {
-        return "RawTorrent{" +
-                "\nsource='" + source + '\'' +
-                ", \ndomain='" + domain + '\'' +
-                ", \nname='" + name + '\'' +
-                ", \nid=" + id +
-                ", \nsize=" + size +
-                ", \nunit=" + unit +
-                ", \ntimeOfLive=" + timeOfLive +
-                ", \ntimeOfFree=" + timeOfFree +
-                ", \nuploader='" + uploader + '\'' +
-                ", \nseeder=" + seeder +
-                ", \nleecher=" + leecher +
-                ", \ncomplete=" + complete +
-                ", \nisSticky=" + sticky +
-                ", \nisFree=" + free +
-                ", \nisDiy=" + diy +
-                ", \nisCnSubtitle=" + cnSubtitle +
-                ", \nisRestrict=" + restrict +
-                ", \nisHr=" + hr +
-                "\n}";
-    }
+//    @Override
+//    public String toString() {
+//        return "RawTorrent{" +
+//                "\nsource='" + source + '\'' +
+//                ", \ndomain='" + domain + '\'' +
+//                ", \nname='" + name + '\'' +
+//                ", \nid=" + id +
+//                ", \nsize=" + size +
+//                ", \ntimeOfLive=" + timeOfLive +
+//                ", \ntimeOfFree=" + timeOfFree +
+//                ", \nuploader='" + uploader + '\'' +
+//                ", \nseeder=" + seeder +
+//                ", \nleecher=" + leecher +
+//                ", \ncomplete=" + complete +
+//                ", \nisSticky=" + sticky +
+//                ", \nisFree=" + free +
+//                ", \nisDiy=" + diy +
+//                ", \nisCnSubtitle=" + cnSubtitle +
+//                ", \nisRestrict=" + restrict +
+//                ", \nisHr=" + hr +
+//                "\n}";
+//    }
 }

@@ -20,7 +20,7 @@ public abstract class Client implements Runnable{
     public abstract void login() throws IOException;
     public abstract HashSet<Torrents> acquireTorrents(TorrentState state) throws IOException;
     public abstract void acquireGlobalInfo() throws IOException;
-    public abstract boolean addTorrent(String link, String name, String hash, float downloadLimit, float uploadLimit) throws IOException;
+    public abstract boolean addTorrent(String link, String name, String hash, Long size, float downloadLimit, float uploadLimit) throws IOException;
     public abstract boolean removeTorrent(String link, String name) throws IOException;
     public abstract boolean removeTorrent(String hash) throws IOException;
     public abstract void pauseTorrents(String hashes) throws IOException;

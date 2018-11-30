@@ -16,14 +16,18 @@ import java.util.regex.Pattern;
  */
 public class Snexus extends PTSites {
 
-    public Snexus(String page,  HashMap<String, String> cookies, float downLimit, float upLimit) {
+    public Snexus(String page,  HashMap<String, String> cookies, String passkey, float downLimit, float upLimit) {
         this.page = page;
         this.cookies = cookies;
+        this.passkey = passkey;
         this.upLimit = upLimit;
         this.downLimit = downLimit;
 //        String pageToGetPasskey = page;
         this.domain = page.substring(page.indexOf("//") + 2, page.indexOf("/", page.indexOf("//") + 2));
-        acquirePasskey();
+        HtmlUnitDriver driver = new HtmlUnitDriver();
+        driver.get("https://" + getDomain());
+        getCookies().forEach((k, v) -> driver.manage().addCookie(new Cookie(k, v)));
+        setDriver(driver);
     }
 
     public static boolean isSnexus(String url) {
@@ -33,23 +37,23 @@ public class Snexus extends PTSites {
                 url.contains("chdbits") || url.contains("ourbits");
     }
 
-    private boolean acquirePasskey(){
-        HtmlUnitDriver driver = new HtmlUnitDriver();
-        driver.get("https://" + getDomain());
-        getCookies().forEach((k, v) -> driver.manage().addCookie(new Cookie(k, v)));
-        setDriver(driver);
-        driver.get("https://" + getDomain() + "/usercp.php");
-        String source = driver.getPageSource();
-        Pattern passkeyPattern = Pattern.compile("[0-9a-z]{32}");
-        Matcher passkeyMatcher = passkeyPattern.matcher(source);
-        if (passkeyMatcher.find()) {
-            this.setPasskey(passkeyMatcher.group());
-            return true;
-        } else {
-            System.out.println(" \\u001b[31m[ERROR]  \\u001b[32mBoxHelper\\u001b[0m: Cannot acquire passkey...\\u001b[0m");
-            return false;
-        }
-    }
+//    private boolean acquirePasskey(){
+//        HtmlUnitDriver driver = new HtmlUnitDriver();
+//        driver.get("https://" + getDomain());
+//        getCookies().forEach((k, v) -> driver.manage().addCookie(new Cookie(k, v)));
+//        setDriver(driver);
+//        driver.get("https://" + getDomain() + "/usercp.php");
+//        String source = driver.getPageSource();
+//        Pattern passkeyPattern = Pattern.compile("[0-9a-z]{32}");
+//        Matcher passkeyMatcher = passkeyPattern.matcher(source);
+//        if (passkeyMatcher.find()) {
+//            this.setPasskey(passkeyMatcher.group());
+//            return true;
+//        } else {
+//            System.out.println("\u001b[31;1m [Error]  \u001b[34m    BoxHelper:\u001b[0m Cannot acquire passkey...");
+//            return false;
+//        }
+//    }
 
     public HashSet<RawTorrent> acquireTorrents(){
         HtmlUnitDriver driver = this.getDriver();
@@ -187,30 +191,29 @@ public class Snexus extends PTSites {
 
         //size
         String sizeString = "";
+        Long ratio = 0L;
         if (s.contains(">KB<")) {
             sizeString = s.substring(s.indexOf(">KB<") - 20);
-            rawTorrent.setUnit(RawTorrent.Unit.KB);
+            ratio = 1024L;
         }
         if (s.contains(">MB<")) {
             sizeString = s.substring(s.indexOf(">MB<") - 20);
-            rawTorrent.setUnit(RawTorrent.Unit.MB);
+            ratio = 1024*1024L;
         }
         if (s.contains(">GB<")) {
             sizeString = s.substring(s.indexOf(">GB<") - 20);
-            rawTorrent.setUnit(RawTorrent.Unit.GB);
+            ratio = 1024*1024*1024L;
         }
         if (s.contains(">TB<")) {
             sizeString = s.substring(s.indexOf(">TB<") - 20);
-            rawTorrent.setUnit(RawTorrent.Unit.TB);
-        }
-        if (s.contains(">PB<")) {
-            sizeString = s.substring(s.indexOf(">PB<") - 20);
-            rawTorrent.setUnit(RawTorrent.Unit.PB);
+            ratio = 1024*1024*1024*1024L;
         }
         reg = "\\d*\\.\\d*";
         pattern = Pattern.compile(reg);
         matcher = pattern.matcher(sizeString);
-        if (matcher.find()) rawTorrent.setSize(Double.parseDouble(matcher.group()));
+        if (matcher.find()) {
+            rawTorrent.setSize((long)(1000 * Float.parseFloat(matcher.group())) * ratio / 1000);
+        }
 
         //seeders & leechers & complete
         reg = ">\\d+<";
@@ -241,8 +244,10 @@ public class Snexus extends PTSites {
         String pageSource = driver.getPageSource();
         String reg = "[a-zA-Z0-9]{32}";
         Pattern pattern = Pattern.compile(reg);
-        Matcher matcher = pattern.matcher(pageSource.substring(pageSource.indexOf("Hash")));
-        if (matcher.find()) return matcher.group();
-        else return "";
+        if (pageSource.contains("Hash")) {
+            Matcher matcher = pattern.matcher(pageSource.substring(pageSource.indexOf("Hash")));
+            if (matcher.find()) return matcher.group();
+            else return "";
+        } else return "";
     }
 }

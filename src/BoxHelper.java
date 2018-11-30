@@ -23,6 +23,8 @@ public class BoxHelper {
 
     public static void main(String[] args) {
 
+        java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(java.util.logging.Level.OFF);
+        java.util.logging.Logger.getLogger("org.apache.http").setLevel(java.util.logging.Level.OFF);
         BoxHelper boxHelper = new BoxHelper();
         Properties configProperties = Config.loadConfig();
         Properties pageProperties = Config.loadPages();
@@ -55,7 +57,7 @@ public class BoxHelper {
             boxHelper.count++;
             sitesController.setAddedTorrents(clientsController.getAddedTorrents());
             try {
-                sleep(30000);
+                sleep(15000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

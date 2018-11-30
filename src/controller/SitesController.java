@@ -61,7 +61,7 @@ public class SitesController implements Runnable {
                 }
             }
             if(Snexus.isSnexus(page)) {
-                Snexus snexus = new Snexus(page, cookies, Float.valueOf(properties.getProperty("download_limit_" + i)), Float.valueOf(properties.getProperty("upload_limit_" + i)));
+                Snexus snexus = new Snexus(page, cookies, properties.getProperty("passkey_" + i), Float.valueOf(properties.getProperty("download_limit_" + i)), Float.valueOf(properties.getProperty("upload_limit_" + i)));
                 final int num = i;
                 snexus.acquireTorrents().forEach(rawTorrent -> {
                     if (isQualified(num, rawTorrent)) {
@@ -124,7 +124,7 @@ public class SitesController implements Runnable {
                         double lower = Double.parseDouble(size.substring(1, size.indexOf(",")));
                         double upper = Double.parseDouble(size.substring(size.indexOf(",") + 1, size.length() - 1));
                         if (upper < 0) upper = Double.MAX_VALUE;
-                        if (lower > rawTorrent.getSize() || rawTorrent.getSize() > upper) subHit=false;
+                        if (lower < (rawTorrent.getSize() / (double)1073741824) && (rawTorrent.getSize() / (double)1073741824) < upper) hit=true;
                     } else {
                         switch (sub.trim()){
                             default:
@@ -155,7 +155,7 @@ public class SitesController implements Runnable {
                 double lower = Double.parseDouble(size.substring(1, size.indexOf(",")));
                 double upper = Double.parseDouble(size.substring(size.indexOf(",") + 1, size.length() - 1));
                 if (upper < 0) upper = Double.MAX_VALUE;
-                if (lower < rawTorrent.getSize() && rawTorrent.getSize() < upper) hit=true;
+                if (lower < (rawTorrent.getSize() / (double)1073741824) && (rawTorrent.getSize() / (double)1073741824) < upper) hit=true;
             } else {
                 switch (rule.trim()){
                     default:

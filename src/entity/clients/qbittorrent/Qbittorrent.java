@@ -17,6 +17,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.HashSet;
 
 import static java.lang.Thread.sleep;
@@ -65,7 +66,7 @@ public class Qbittorrent extends Client {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://127.0.0.1:" + this.getPort() + "/api/v2/app/webapiVersion");
         httpget.addHeader("User-Agent", "BoxHelper");
-        httpget.addHeader("Host", "http://127.0.0.1:" + this.getPort());
+        httpget.addHeader("Host", "127.0.0.1:" + this.getPort());
         httpget.addHeader("Cookie", "SID=" + this.sessionID);
         CloseableHttpResponse response = httpClient.execute(httpget);
         String responseString = "1";
@@ -93,7 +94,7 @@ public class Qbittorrent extends Client {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://127.0.0.1:" + this.getPort() + "/api/v2/auth/login?username=" + this.username + "&password=" + this.password);
         httpget.addHeader("User-Agent", "BoxHelper");
-        httpget.addHeader("Host", "http://127.0.0.1:" + this.getPort());
+        httpget.addHeader("Host", "127.0.0.1:" + this.getPort());
         CloseableHttpResponse response = httpClient.execute(httpget);
         String setCookie = response.getFirstHeader("Set-Cookie").getValue();
         String sid = setCookie.substring("SID=".length(), setCookie.indexOf(";"));
@@ -118,7 +119,7 @@ public class Qbittorrent extends Client {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://127.0.0.1:" + this.getPort() + des);
         httpget.addHeader("User-Agent", "BoxHelper");
-        httpget.addHeader("Host", "http://127.0.0.1:" + this.getPort());
+        httpget.addHeader("Host", "127.0.0.1:" + this.getPort());
         httpget.addHeader("Cookie", "SID=" + this.sessionID);
         CloseableHttpResponse response = httpClient.execute(httpget);
         String responseString = "";
@@ -155,7 +156,7 @@ public class Qbittorrent extends Client {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://127.0.0.1:" + this.getPort() + "/api/v2/transfer/info");
         httpget.addHeader("User-Agent", "BoxHelper");
-        httpget.addHeader("Host", "http://127.0.0.1:" + this.getPort());
+        httpget.addHeader("Host", "127.0.0.1:" + this.getPort());
         httpget.addHeader("Cookie", "SID=" + this.sessionID);
         CloseableHttpResponse response = httpClient.execute(httpget);
         String responseString = "";
@@ -189,7 +190,7 @@ public class Qbittorrent extends Client {
     }
 
     private void checkIO() throws IOException {
-        if ((this.getUploadSpeed() + this.getDownloadSpeed()) < (this.getAverageUp() + this.getDownloadSpeed()) / 10){
+        if ((this.getUploadSpeed() + this.getDownloadSpeed()) < (this.getAverageUp() + this.getDownloadSpeed()) / (double)10){
             System.out.println("\u001b[33;1m [Warning]\u001b[36m  qBittorrent:\u001b[0m Maybe having some I/O problem. Try to solve it.");
             StringBuilder stringBuilder = new StringBuilder();
             this.downloadingTorrents.forEach(torrent -> {
@@ -207,12 +208,12 @@ public class Qbittorrent extends Client {
     }
 
     @Override
-    public boolean addTorrent(String link, String name, String hash, float downloadLimit, float uploadLimit) throws IOException {
+    public boolean addTorrent(String link, String name, String hash, Long size, float downloadLimit, float uploadLimit) throws IOException {
         System.out.println("\u001b[37;1m [Info]   \u001b[36m  qBittorrent:\u001b[0m Adding torrent " + link.substring(0, link.indexOf("passkey") - 1) + " ...");
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://127.0.0.1:" + getPort() + "/api/v2/torrents/add");
         httpPost.addHeader("User-Agent", "BoxHelper");
-        httpPost.addHeader("Host", "http://127.0.0.1:" + getPort());
+        httpPost.addHeader("Host", "127.0.0.1:" + getPort());
         httpPost.addHeader("Cookie", "SID=" + this.sessionID);
         MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
         multipartEntityBuilder.addTextBody("urls", link);
@@ -221,7 +222,7 @@ public class Qbittorrent extends Client {
         httpPost.setEntity(multipartEntityBuilder.build());
         httpClient.execute(httpPost);
         httpClient.close();
-        boolean added =recheck(hash);
+        boolean added =recheck(hash, name, size, TorrentState.DOWNLOADING);
         if (added) {
             System.out.println("\u001b[37;1m [Info]   \u001b[36m  qBittorrent:\u001b[0m Successfully added torrent " + link.substring(0, link.indexOf("passkey") - 1) + " .");
             acquireTorrents(TorrentState.DOWNLOADING);
@@ -236,27 +237,42 @@ public class Qbittorrent extends Client {
         return added;
     }
 
-    private boolean recheck(String hash) throws IOException {
+    private boolean recheck(String hash, String name, Long size, TorrentState torrentState) throws IOException {
 
         try {
             sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-//        System.out.println("\u001b[37;1m [Info]   \u001b[36m  qBittorrent:\u001b[0m Checking torrent " + link + " ...");
+        String des = "";
+        switch (torrentState) {
+            default:
+            case ALL: des = "/api/v2/torrents/info?filter=all"; break;
+            case DOWNLOADING: des = "/api/v2/torrents/info?filter=downloading"; break;
+        }
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet("http://127.0.0.1:" + getPort() + "/api/v2/torrents/info?filter=all");
+        HttpGet httpget = new HttpGet("http://127.0.0.1:" + this.getPort() + des);
         httpget.addHeader("User-Agent", "BoxHelper");
-        httpget.addHeader("Host", "http://127.0.0.1:" + getPort());
+        httpget.addHeader("Host", "127.0.0.1:" + getPort());
         httpget.addHeader("Cookie", "SID=" + this.sessionID);
         CloseableHttpResponse response = httpClient.execute(httpget);
         HttpEntity entity = response.getEntity();
-        boolean exist = true;
+        boolean exist = false;
         if (entity != null) {
             String responseString = EntityUtils.toString(entity) ;
-            if (!responseString.contains(hash)){
-
-                exist = false;
+            if (hash != null && !"".equals(hash)) {
+                if (responseString.contains(hash)) {
+                    exist = true;
+                }
+            } else {
+                for (Torrents torrent: decodeRawList(responseString)){
+                    if (torrent.getName().replaceAll("[\\.\\s]", "").equals(name.replaceAll("[\\.\\s]", ""))){
+                        exist = true;
+                    }
+                    if (((System.currentTimeMillis() / 1000 - torrent.getAdded_on()) < 180) && Math.abs(torrent.getTotal_size() - size) < 10000000){
+                        exist = true;
+                    }
+                }
             }
         }
         response.close();
@@ -266,21 +282,24 @@ public class Qbittorrent extends Client {
 
     @Override
     public boolean removeTorrent(String link, String name) throws IOException {
+        if (link == null || "".equals(link) || name == null || "".equals(name)) return true;
         System.out.println("\u001b[37;1m [Info]   \u001b[36m  qBittorrent:\u001b[0m Removing torrent " + name + " ...");
         String hash = null;
+        Long size = 0L;
         CloseableHttpClient httpClient = HttpClients.createDefault();
         for (Object torrent: this.allTorrents){
             if (((QbittorrentTorrents) torrent).getName().contains(name) || ((QbittorrentTorrents) torrent).getName().contains(name.replaceAll("\\s", "\\."))){
                 hash = ((QbittorrentTorrents) torrent).getHash();
+                size = ((QbittorrentTorrents) torrent).getTotal_size();
                 break;
             }
         }
         HttpGet httpget = new HttpGet("http://127.0.0.1:" + getPort() + "/api/v2/torrents/delete?hashes=" + hash + "&deleteFiles=true");
         httpget.addHeader("User-Agent", "BoxHelper");
-        httpget.addHeader("Host", "http://127.0.0.1:" + getPort());
+        httpget.addHeader("Host", "127.0.0.1:" + getPort());
         httpget.addHeader("Cookie", "SID=" + this.sessionID);
         httpClient.execute(httpget);
-        boolean removed = recheck(hash);
+        boolean removed = recheck(hash, name, size, TorrentState.ALL);
         if (removed) System.out.println("\u001b[33;1m [Warning]\u001b[36m  qBittorrent:\u001b[0m " + name + " did not removed. Retry later...");
         else System.out.println("\u001b[37;1m [Info]   \u001b[36m  qBittorrent:\u001b[0m " + name + " successfully removed.");
         httpClient.close();
@@ -289,10 +308,13 @@ public class Qbittorrent extends Client {
 
     @Override
     public boolean removeTorrent(String hash) throws IOException {
+        if (hash == null || "".equals(hash)) return true;
         String name = null;
+        Long size = 0L;
         for (Object torrent: this.allTorrents){
             if (((QbittorrentTorrents) torrent).getHash().equals(hash)){
                 name = ((QbittorrentTorrents) torrent).getName();
+                size = ((QbittorrentTorrents) torrent).getTotal_size();
                 break;
             }
         }
@@ -300,10 +322,10 @@ public class Qbittorrent extends Client {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://127.0.0.1:" + getPort() + "/api/v2/torrents/delete?hashes=" + hash + "&deleteFiles=true");
         httpget.addHeader("User-Agent", "BoxHelper");
-        httpget.addHeader("Host", "http://127.0.0.1:" + getPort());
+        httpget.addHeader("Host", "127.0.0.1:" + getPort());
         httpget.addHeader("Cookie", "SID=" + this.sessionID);
         httpClient.execute(httpget);
-        boolean removed = recheck(hash);
+        boolean removed = recheck(hash, name, size, TorrentState.ALL);
         if (removed)  System.out.println("\u001b[33;1m [Warning]\u001b[36m  qBittorrent:\u001b[0m " + name + " did not removed. Retry later...");
         else System.out.println("\u001b[37;1m [Info]   \u001b[36m  qBittorrent:\u001b[0m " + name + " successfully removed.");
         httpClient.close();
@@ -316,7 +338,7 @@ public class Qbittorrent extends Client {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://127.0.0.1:" + getPort() + "/api/v2/torrents/pause?hashes=" + hashes);
         httpget.addHeader("User-Agent", "BoxHelper");
-        httpget.addHeader("Host", "http://127.0.0.1:" + getPort());
+        httpget.addHeader("Host", "127.0.0.1:" + getPort());
         httpget.addHeader("Cookie", "SID=" + this.sessionID);
         httpClient.execute(httpget);
         httpClient.close();
@@ -333,7 +355,7 @@ public class Qbittorrent extends Client {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://127.0.0.1:" + getPort() + "/api/v2/torrents/resume?hashes=" + hashes);
         httpget.addHeader("User-Agent", "BoxHelper");
-        httpget.addHeader("Host", "http://127.0.0.1:" + getPort());
+        httpget.addHeader("Host", "127.0.0.1:" + getPort());
         httpget.addHeader("Cookie", "SID=" + this.sessionID);
         httpClient.execute(httpget);
         httpClient.close();
