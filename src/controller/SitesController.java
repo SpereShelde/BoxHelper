@@ -1,7 +1,5 @@
 package controller;
 
-import entity.clients.Torrents;
-import entity.config.Config;
 import entity.sites.Snexus;
 import entity.sites.torrents.RawTorrent;
 

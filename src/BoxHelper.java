@@ -43,7 +43,7 @@ public class BoxHelper {
         ClientsController clientsController = new ClientsController(clients);
         RawTorrent torrent = new RawTorrent();
         while (true) {
-            if (boxHelper.count % 6 == 1) {
+            if (boxHelper.count % Integer.parseInt(configProperties.getProperty("turn")) == 1) {
                 configProperties = Config.loadConfig();
                 clientsController.setProperties(configProperties);
                 sitesController.setProperties(pageProperties);
@@ -57,7 +57,8 @@ public class BoxHelper {
             boxHelper.count++;
             sitesController.setAddedTorrents(clientsController.getAddedTorrents());
             try {
-                sleep(15000);
+                long fluctuation = (long)Integer.parseInt(configProperties.getProperty("fluctuation")) * (int)(1000 * Math.random());
+                sleep(fluctuation + (long)Integer.parseInt(configProperties.getProperty("cycle")) * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
